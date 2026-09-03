@@ -32,6 +32,16 @@
     { cols: 19, rows: 13, crateProb: 0.72, enemyMax: 6, enemySpeedMult: 1.55, time: 90, lane: true, floorA: '#F0D9D9', floorB: '#E0AFAF', wall: '#5A1E1E', name: "PANIKA PRZED DEADLINE'M" },
   ];
 
+  // Enemy roster — unlocked cumulatively as the player reaches minLevel.
+  // weight controls how often a kind is picked once unlocked (rarer for tougher kinds).
+  const ENEMY_KINDS = [
+    { id: 'stapler', minLevel: 1, speedMult: 1.00, score: 50, weight: 5 },
+    { id: 'printer', minLevel: 3, speedMult: 1.15, score: 65, weight: 4 },
+    { id: 'binder', minLevel: 5, speedMult: 0.90, score: 75, weight: 3 },
+    { id: 'mug', minLevel: 7, speedMult: 1.30, score: 85, weight: 3 },
+    { id: 'boss', minLevel: 9, speedMult: 1.45, score: 150, weight: 1 },
+  ];
+
   const playerSprite = new Image();
   playerSprite.src = 'assets/player.png';
   const PLAYER_SPRITE_ASPECT = 165 / 205; // width / height of assets/player.png
@@ -156,18 +166,32 @@
     };
   }
 
+  function pickEnemyKind() {
+    const pool = ENEMY_KINDS.filter((k) => k.minLevel <= levelIdx);
+    const totalWeight = pool.reduce((sum, k) => sum + k.weight, 0);
+    let roll = Math.random() * totalWeight;
+    for (const k of pool) {
+      roll -= k.weight;
+      if (roll <= 0) return k;
+    }
+    return pool[pool.length - 1];
+  }
+
   function spawnEnemy() {
     const corners = [
       [COLS - 2, 1], [1, ROWS - 2], [COLS - 2, ROWS - 2],
     ];
     const spot = corners[Math.floor(Math.random() * corners.length)];
+    const kind = pickEnemyKind();
     enemies.push({
       x: spot[0] * TILE, y: spot[1] * TILE,
       c: spot[0], r: spot[1],
       dir: ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)],
-      speed: ENEMY_SPEED_BASE * levelDef.enemySpeedMult,
+      speed: ENEMY_SPEED_BASE * levelDef.enemySpeedMult * kind.speedMult,
       retargetAt: 0,
       alive: true,
+      kind: kind.id,
+      scoreValue: kind.score,
     });
   }
 
@@ -280,7 +304,7 @@
       const ec = Math.round(en.x / TILE), er = Math.round(en.y / TILE);
       if (hitSet.has(`${ec},${er}`)) {
         en.alive = false;
-        score += SCORE.enemy;
+        score += en.scoreValue || SCORE.enemy;
       }
     });
 
@@ -608,6 +632,147 @@
     ctx.globalAlpha = 1;
   }
 
+  function drawEnemyEyes(y, glow) {
+    ctx.fillStyle = glow ? '#FF4136' : '#fff';
+    ctx.beginPath();
+    ctx.arc(-6, y, glow ? 3.2 : 5.5, 0, Math.PI * 2);
+    ctx.arc(6, y, glow ? 3.2 : 5.5, 0, Math.PI * 2);
+    ctx.fill();
+    if (glow) {
+      ctx.fillStyle = 'rgba(255,65,54,.35)';
+      ctx.beginPath();
+      ctx.arc(-6, y, 6, 0, Math.PI * 2);
+      ctx.arc(6, y, 6, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.fillStyle = '#B0121B';
+      ctx.beginPath();
+      ctx.arc(-6, y, 2.4, 0, Math.PI * 2);
+      ctx.arc(6, y, 2.4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function drawStapler() {
+    ctx.fillStyle = '#6B7280';
+    roundRect(-TILE * 0.28, -TILE * 0.26, TILE * 0.56, TILE * 0.5, 8);
+    ctx.fill();
+    ctx.fillStyle = '#565D6B';
+    ctx.fillRect(-TILE * 0.28, TILE * 0.02, TILE * 0.56, TILE * 0.08);
+    drawEnemyEyes(-4, false);
+    ctx.strokeStyle = '#2b2b2b';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(-5, 8); ctx.lineTo(5, 8);
+    ctx.stroke();
+  }
+
+  function drawPrinter(now) {
+    ctx.fillStyle = '#3A3E46';
+    roundRect(-TILE * 0.3, -TILE * 0.27, TILE * 0.6, TILE * 0.52, 6);
+    ctx.fill();
+    ctx.fillStyle = '#EDEDED';
+    ctx.fillRect(-TILE * 0.24, -TILE * 0.02, TILE * 0.48, TILE * 0.09);
+    const blink = Math.floor(now / 400) % 2 === 0;
+    ctx.fillStyle = blink ? '#FF4136' : '#7A1F1A';
+    ctx.beginPath();
+    ctx.arc(TILE * 0.2, -TILE * 0.18, 2.6, 0, Math.PI * 2);
+    ctx.fill();
+    // jammed paper corner
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.moveTo(-TILE * 0.18, TILE * 0.16);
+    ctx.lineTo(-TILE * 0.06, TILE * 0.16);
+    ctx.lineTo(-TILE * 0.12, TILE * 0.26);
+    ctx.closePath();
+    ctx.fill();
+    drawEnemyEyes(-12, false);
+    ctx.strokeStyle = '#2b2b2b';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.arc(0, 6, 3, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  function drawBinder() {
+    ctx.fillStyle = '#2F5FA8';
+    roundRect(-TILE * 0.21, -TILE * 0.32, TILE * 0.42, TILE * 0.64, 6);
+    ctx.fill();
+    ctx.fillStyle = '#9FB6DA';
+    ctx.beginPath();
+    ctx.arc(-TILE * 0.08, -TILE * 0.22, 3.4, 0, Math.PI * 2);
+    ctx.arc(TILE * 0.08, -TILE * 0.22, 3.4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#1B3A6B';
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(-9, -2); ctx.lineTo(-4, 2);
+    ctx.moveTo(9, -2); ctx.lineTo(4, 2);
+    ctx.stroke();
+    drawEnemyEyes(6, false);
+    ctx.strokeStyle = '#1B3A6B';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(-5, 16); ctx.lineTo(5, 16);
+    ctx.stroke();
+  }
+
+  function drawMug(now) {
+    ctx.strokeStyle = '#8B5A2B';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(TILE * 0.22, 0, 7, -1.1, 1.1);
+    ctx.stroke();
+    ctx.fillStyle = '#8B5A2B';
+    ctx.beginPath();
+    ctx.arc(0, 2, TILE * 0.26, 0, Math.PI * 2);
+    ctx.fill();
+    const steamY = -TILE * 0.28 + Math.sin(now / 300) * 2;
+    ctx.strokeStyle = 'rgba(180,180,180,.7)';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(-6, steamY + 6); ctx.quadraticCurveTo(-9, steamY, -6, steamY - 6);
+    ctx.moveTo(5, steamY + 6); ctx.quadraticCurveTo(2, steamY, 5, steamY - 6);
+    ctx.stroke();
+    drawEnemyEyes(-2, false);
+    ctx.strokeStyle = '#4A2E12';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.arc(0, 9, 3.5, 0.15 * Math.PI, 0.85 * Math.PI);
+    ctx.stroke();
+  }
+
+  function drawBoss(now) {
+    const pulse = 0.5 + Math.sin(now / 250) * 0.5;
+    ctx.strokeStyle = `rgba(255,65,54,${0.25 + pulse * 0.35})`;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(0, 0, TILE * 0.42, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.fillStyle = '#7A1620';
+    roundRect(-TILE * 0.33, -TILE * 0.3, TILE * 0.66, TILE * 0.58, 10);
+    ctx.fill();
+    ctx.fillStyle = '#4A0E15';
+    ctx.fillRect(-TILE * 0.33, TILE * 0.04, TILE * 0.66, TILE * 0.09);
+
+    // horns
+    ctx.fillStyle = '#4A0E15';
+    ctx.beginPath();
+    ctx.moveTo(-TILE * 0.2, -TILE * 0.28); ctx.lineTo(-TILE * 0.28, -TILE * 0.44); ctx.lineTo(-TILE * 0.1, -TILE * 0.3);
+    ctx.closePath();
+    ctx.moveTo(TILE * 0.2, -TILE * 0.28); ctx.lineTo(TILE * 0.28, -TILE * 0.44); ctx.lineTo(TILE * 0.1, -TILE * 0.3);
+    ctx.closePath();
+    ctx.fill();
+
+    drawEnemyEyes(-4, true);
+    ctx.strokeStyle = '#2b0507';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-7, 9); ctx.lineTo(-2, 12); ctx.lineTo(0, 8); ctx.lineTo(2, 12); ctx.lineTo(7, 9);
+    ctx.stroke();
+  }
+
   function drawEnemy(en, now) {
     const cx = en.x + TILE / 2, cy = en.y + TILE / 2;
     const bob = Math.sin(now / 140 + en.c) * 1.6;
@@ -618,30 +783,13 @@
     ctx.ellipse(0, TILE * 0.32, TILE * 0.24, TILE * 0.07, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = '#6B7280';
-    roundRect(-TILE * 0.28, -TILE * 0.26, TILE * 0.56, TILE * 0.5, 8);
-    ctx.fill();
-    ctx.fillStyle = '#565D6B';
-    ctx.fillRect(-TILE * 0.28, TILE * 0.02, TILE * 0.56, TILE * 0.08);
-
-    // eyes
-    ctx.fillStyle = '#fff';
-    ctx.beginPath();
-    ctx.arc(-6, -4, 5.5, 0, Math.PI * 2);
-    ctx.arc(6, -4, 5.5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#B0121B';
-    ctx.beginPath();
-    ctx.arc(-6, -4, 2.4, 0, Math.PI * 2);
-    ctx.arc(6, -4, 2.4, 0, Math.PI * 2);
-    ctx.fill();
-
-    // angry mouth
-    ctx.strokeStyle = '#2b2b2b';
-    ctx.lineWidth = 1.6;
-    ctx.beginPath();
-    ctx.moveTo(-5, 8); ctx.lineTo(5, 8);
-    ctx.stroke();
+    switch (en.kind) {
+      case 'printer': drawPrinter(now); break;
+      case 'binder': drawBinder(); break;
+      case 'mug': drawMug(now); break;
+      case 'boss': drawBoss(now); break;
+      default: drawStapler();
+    }
 
     ctx.restore();
   }
