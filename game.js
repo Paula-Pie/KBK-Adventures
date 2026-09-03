@@ -73,6 +73,8 @@
   const levelBannerSub = $('level-banner-sub');
   const tutorialHint = $('tutorial-hint');
   const skipTutorialBtn = $('skip-tutorial-btn');
+  const tutorialIntro = $('tutorial-intro');
+  const introStartBtn = $('intro-start-btn');
   const retryBtn = $('retry-btn');
   const menuBtn = $('menu-btn');
   const resultTitle = $('result-title');
@@ -815,6 +817,12 @@
   // ---------------------------------------------------------------------
   // Run lifecycle
   // ---------------------------------------------------------------------
+  function beginLoop() {
+    running = true;
+    lastTs = performance.now();
+    requestAnimationFrame(loop);
+  }
+
   function startRun(nick, forceTutorial) {
     currentNick = nick;
     showScreen(screenGame);
@@ -823,9 +831,25 @@
     lives = START_LIVES;
     const skipTutorial = !forceTutorial && localStorage.getItem('kbk-tutorial-done') === '1';
     startLevel(skipTutorial ? 1 : 0, null);
-    running = true;
-    lastTs = performance.now();
-    requestAnimationFrame(loop);
+    renderLives();
+    hudScore.textContent = `✨ ${score}`;
+    hudTimer.textContent = `⏱ ${Math.ceil(timeLeft)}`;
+    hudLevel.textContent = levelDef.tutorial ? '🎓 Samouczek' : `🏢 ${levelIdx}/${LEVELS.length}`;
+    render();
+    if (skipTutorial) {
+      beginLoop();
+    } else {
+      // Freeze on the briefing screen until the player is ready — nothing moves or counts down yet.
+      running = false;
+      if (tutorialIntro) tutorialIntro.hidden = false;
+    }
+  }
+
+  if (introStartBtn) {
+    introStartBtn.addEventListener('click', () => {
+      tutorialIntro.hidden = true;
+      beginLoop();
+    });
   }
 
   async function endRun(reason) {

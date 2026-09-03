@@ -317,6 +317,41 @@
     font-weight:600;
   }
 
+  #tutorial-intro{
+    position:absolute; inset:0;
+    z-index:9;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(10,8,6,.78);
+    padding:16px;
+  }
+  #tutorial-intro[hidden]{display:none;}
+  .intro-card{
+    width:min(420px, 100%);
+    max-height:92%;
+    overflow-y:auto;
+    background:var(--card-bg);
+    border-radius:20px;
+    box-shadow:var(--shadow);
+    padding:20px 22px;
+    color:var(--ink);
+  }
+  .intro-card h3{
+    margin:0 0 12px;
+    font-size:1.3rem;
+    color:var(--red);
+    text-align:center;
+  }
+  .intro-row{
+    display:flex; align-items:flex-start; gap:10px;
+    font-size:.86rem;
+    line-height:1.35;
+    padding:6px 0;
+    border-top:1px dashed var(--line);
+  }
+  .intro-row:first-of-type{border-top:none;}
+  .intro-icon{flex-shrink:0; font-size:1.1rem; width:1.6em; text-align:center;}
+  #intro-start-btn{margin-top:14px;}
+
   #touch-controls{
     position:absolute;
     left:0; right:0; bottom:0;
@@ -487,6 +522,18 @@
       <div id="level-banner" hidden>
         <div class="level-banner-num" id="level-banner-num">POZIOM 2</div>
         <div class="level-banner-sub" id="level-banner-sub">Trudność rośnie…</div>
+      </div>
+      <div id="tutorial-intro" hidden>
+        <div class="intro-card">
+          <h3>Jak grać?</h3>
+          <div class="intro-row"><span class="intro-icon">🎮</span><span>Poruszasz się strzałkami / WASD (albo strzałkami na ekranie dotykowym)</span></div>
+          <div class="intro-row"><span class="intro-icon">📎</span><span>Spacja / czerwony przycisk 📎 podkłada bombę-spinacz — wybucha po chwili</span></div>
+          <div class="intro-row"><span class="intro-icon">📦</span><span>Wysadź karton, żeby zdobyć punkty — czasem wypadnie z niego bonus</span></div>
+          <div class="intro-row"><span class="intro-icon">☕📎🧷⏱️</span><span>Bonusy: szybkość, większy zasięg bomby, dodatkowa bomba, +czasu</span></div>
+          <div class="intro-row"><span class="intro-icon">⚠️</span><span>Uważaj na biurowych przeciwników — dotyk kosztuje życie (ale możesz ich wysadzić bombą za punkty!)</span></div>
+          <div class="intro-row"><span class="intro-icon">🎯</span><span>Cel: zbij wszystkie kartony na planszy, żeby przejść na kolejny poziom</span></div>
+          <button id="intro-start-btn" class="btn btn-primary">Zaczynamy! →</button>
+        </div>
       </div>
     </div>
     <div id="touch-controls">
