@@ -42,7 +42,7 @@
 
   const playerSprite = new Image();
   playerSprite.src = 'assets/player.png';
-  const PLAYER_SPRITE_ASPECT = 165 / 205; // width / height of assets/player.png
+  const PLAYER_SPRITE_ASPECT = 296 / 380; // width / height of assets/player.png
 
   // ---------------------------------------------------------------------
   // DOM
@@ -405,11 +405,17 @@
 
   function updatePowerups() {
     const pc = Math.round(player.x / TILE), pr = Math.round(player.y / TILE);
+    const enemyCells = levelIdx >= 2
+      ? enemies.filter((e) => e.alive).map((e) => ({ c: Math.round(e.x / TILE), r: Math.round(e.y / TILE) }))
+      : [];
     powerups = powerups.filter((p) => {
       if (p.c === pc && p.r === pr) {
         applyPowerup(p.type);
         score += SCORE.powerup;
         return false;
+      }
+      if (enemyCells.some((ec) => ec.c === p.c && ec.r === p.r)) {
+        return false; // an enemy got to it first
       }
       return true;
     });
