@@ -44,7 +44,7 @@
   }
 
   *{box-sizing:border-box;}
-  html,body{height:100%;}
+  html,body{height:100%; overscroll-behavior:none;}
   body{
     margin:0;
     background:var(--paper);
@@ -195,6 +195,11 @@
     gap:14px;
     justify-content:center;
     flex-wrap:wrap;
+  }
+  .controls-hint-touch{display:none;}
+  @media (hover: none) and (pointer: coarse){
+    .controls-hint-kb{display:none;}
+    .controls-hint-touch{display:flex;}
   }
 
   .mini-board{
@@ -360,6 +365,29 @@
     pointer-events:none;
     z-index:6;
   }
+  /* On touch devices, give controls their own row instead of floating over the board
+     (keyboard/mouse users keep the compact overlay above, since they rarely need it). */
+  @media (hover: none) and (pointer: coarse){
+    #touch-controls{
+      position:static;
+      flex-shrink:0;
+      padding:8px 18px max(8px, env(safe-area-inset-bottom));
+      background:linear-gradient(0deg, var(--cabinet-dark), rgba(54,61,75,.4));
+    }
+    .dpad{
+      grid-template-columns:44px 44px 44px;
+      grid-template-rows:44px 44px 44px;
+    }
+    #bomb-btn{ width:64px; height:64px; font-size:1.4rem; }
+  }
+  @media (hover: none) and (pointer: coarse) and (max-height: 420px){
+    .dpad{
+      grid-template-columns:38px 38px 38px;
+      grid-template-rows:38px 38px 38px;
+      gap:3px;
+    }
+    #bomb-btn{ width:54px; height:54px; font-size:1.2rem; }
+  }
   .dpad{
     display:grid;
     grid-template-columns:52px 52px 52px;
@@ -487,9 +515,13 @@
       <button id="play-btn" class="btn btn-primary">▶ GRAJ</button>
       <button id="tutorial-btn" class="btn btn-ghost btn-small">🎓 Jak grać? (samouczek)</button>
 
-      <div class="controls-hint">
+      <div class="controls-hint controls-hint-kb">
         <span>⌨️ Strzałki / WASD — ruch</span>
         <span>␣ Spacja — spinacz-bomba</span>
+      </div>
+      <div class="controls-hint controls-hint-touch">
+        <span>👆 Strzałki na ekranie — ruch</span>
+        <span>📎 Przycisk — spinacz-bomba</span>
       </div>
 
       <div class="mini-board">

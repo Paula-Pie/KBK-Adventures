@@ -270,6 +270,12 @@
   bindHold($('dpad-right'), 'right');
   $('bomb-btn').addEventListener('pointerdown', (e) => { e.preventDefault(); if (running) placeBomb(); });
 
+  // Hard-block iOS Safari's pull-to-refresh / rubber-band scroll while the game screen is up —
+  // CSS overscroll-behavior alone doesn't always catch it.
+  document.addEventListener('touchmove', (e) => {
+    if (!screenGame.hidden) e.preventDefault();
+  }, { passive: false });
+
   // ---------------------------------------------------------------------
   // Bombs / explosions
   // ---------------------------------------------------------------------
