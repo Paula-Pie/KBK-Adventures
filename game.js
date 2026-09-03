@@ -4,22 +4,33 @@
   // ---------------------------------------------------------------------
   // Config
   // ---------------------------------------------------------------------
-  const COLS = 13, ROWS = 9;
-  const GAME_TIME = 90; // seconds
   const START_LIVES = 3;
   const BOMB_FUSE = 1800; // ms
   const EXPLOSION_LIFE = 380; // ms
   const INVULN_MS = 1500;
   const PLAYER_SPEED = 3.4; // tiles/sec
-  const ENEMY_SPEED = 1.5;
-  const MAX_ENEMIES = 3;
-  const ENEMY_RESPAWN_MS = 4500;
-  const CRATE_PROB = 0.55;
+  const ENEMY_SPEED_BASE = 1.5;
+  const ENEMY_RESPAWN_MS = 4200;
   const POWERUP_CHANCE = 0.32;
   const SCORE = { crate: 10, enemy: 50, powerup: 5 };
+  const LEVEL_CLEAR_BASE = 100;
+  const LEVEL_BANNER_MS = 1500;
 
   const TILE_EMPTY = 0, TILE_WALL = 1, TILE_CRATE = 2;
   const POWERUP_TYPES = ['speed', 'range', 'bomb', 'time'];
+
+  const LEVELS = [
+    { cols: 13, rows: 9, crateProb: 0.50, enemyMax: 2, enemySpeedMult: 1.00, time: 55, lane: false, floorA: '#E7DFCC', floorB: '#DED4BC', wall: '#3B4252', name: 'Recepcja' },
+    { cols: 13, rows: 9, crateProb: 0.55, enemyMax: 2, enemySpeedMult: 1.05, time: 55, lane: false, floorA: '#DCEFE3', floorB: '#CBE3D3', wall: '#2F5548', name: 'Open Space' },
+    { cols: 15, rows: 9, crateProb: 0.55, enemyMax: 3, enemySpeedMult: 1.10, time: 60, lane: true, floorA: '#E3E7F5', floorB: '#D0D8EF', wall: '#39415E', name: 'Sala Konferencyjna' },
+    { cols: 15, rows: 11, crateProb: 0.58, enemyMax: 3, enemySpeedMult: 1.15, time: 65, lane: false, floorA: '#F2E7D0', floorB: '#E7D4A8', wall: '#5A4326', name: 'Archiwum' },
+    { cols: 15, rows: 11, crateProb: 0.60, enemyMax: 3, enemySpeedMult: 1.20, time: 65, lane: true, floorA: '#DFE9F7', floorB: '#C4D9F0', wall: '#2E4766', name: 'Serwerownia' },
+    { cols: 17, rows: 11, crateProb: 0.62, enemyMax: 4, enemySpeedMult: 1.25, time: 70, lane: false, floorA: '#F5E0E0', floorB: '#EFC4C4', wall: '#5A2E2E', name: 'Dział Marketingu' },
+    { cols: 17, rows: 11, crateProb: 0.63, enemyMax: 4, enemySpeedMult: 1.30, time: 70, lane: true, floorA: '#EAEAEA', floorB: '#D6D6D6', wall: '#3A3A3A', name: 'Kuchnia Biurowa' },
+    { cols: 17, rows: 13, crateProb: 0.65, enemyMax: 4, enemySpeedMult: 1.35, time: 75, lane: false, floorA: '#EDE3F5', floorB: '#DBC4EF', wall: '#3E2E5A', name: 'Gabinet Zarządu' },
+    { cols: 17, rows: 13, crateProb: 0.68, enemyMax: 5, enemySpeedMult: 1.40, time: 80, lane: true, floorA: '#F5EFD0', floorB: '#EBDD9C', wall: '#5A4E1E', name: 'Skarbiec Faktur' },
+    { cols: 19, rows: 13, crateProb: 0.72, enemyMax: 6, enemySpeedMult: 1.55, time: 90, lane: true, floorA: '#F0D9D9', floorB: '#E0AFAF', wall: '#5A1E1E', name: "PANIKA PRZED DEADLINE'M" },
+  ];
 
   const playerSprite = new Image();
   playerSprite.src = 'assets/player.png';
@@ -38,9 +49,13 @@
   const miniBoardList = $('mini-board-list');
   const canvas = $('game-canvas');
   const ctx = canvas.getContext('2d');
+  const hudLevel = $('hud-level');
   const hudTimer = $('hud-timer');
   const hudScore = $('hud-score');
   const hudLives = $('hud-lives');
+  const levelBanner = $('level-banner');
+  const levelBannerNum = $('level-banner-num');
+  const levelBannerSub = $('level-banner-sub');
   const retryBtn = $('retry-btn');
   const menuBtn = $('menu-btn');
   const resultTitle = $('result-title');
@@ -57,9 +72,14 @@
   // State
   // ---------------------------------------------------------------------
   let TILE = 48;
+  let COLS = 13, ROWS = 9;
+  let levelDef = LEVELS[0];
+  let levelIdx = 1; // 1-based, 1..10
   let grid = [];
+  let cratesRemaining = 0;
+  let levelClearPending = false;
   let player, enemies, bombs, explosions, powerups;
-  let score = 0, lives = START_LIVES, timeLeft = GAME_TIME;
+  let score = 0, lives = START_LIVES, timeLeft = 55;
   let running = false;
   let lastTs = 0;
   let nextEnemySpawnAt = 0;
@@ -72,7 +92,7 @@
   // ---------------------------------------------------------------------
   function inBounds(c, r) { return c >= 0 && c < COLS && r >= 0 && r < ROWS; }
 
-  function generateLevel() {
+  function generateLevel(def) {
     grid = Array.from({ length: ROWS }, () => Array(COLS).fill(TILE_EMPTY));
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) {
@@ -90,12 +110,21 @@
       [COLS - 2, ROWS - 2], [COLS - 3, ROWS - 2], [COLS - 2, ROWS - 3],
     ];
     const clearSet = new Set(clearZones.map(([c, r]) => `${c},${r}`));
+    const midR = Math.floor(ROWS / 2), midC = Math.floor(COLS / 2);
 
     for (let r = 1; r < ROWS - 1; r++) {
       for (let c = 1; c < COLS - 1; c++) {
         if (grid[r][c] !== TILE_EMPTY) continue;
         if (clearSet.has(`${c},${r}`)) continue;
-        if (Math.random() < CRATE_PROB) grid[r][c] = TILE_CRATE;
+        if (def.lane && (r === midR || c === midC)) continue;
+        if (Math.random() < def.crateProb) grid[r][c] = TILE_CRATE;
+      }
+    }
+
+    cratesRemaining = 0;
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        if (grid[r][c] === TILE_CRATE) cratesRemaining++;
       }
     }
   }
@@ -112,15 +141,16 @@
   // ---------------------------------------------------------------------
   // Entities
   // ---------------------------------------------------------------------
-  function makePlayer() {
+  function makePlayer(prev) {
     return {
       x: 1 * TILE, y: 1 * TILE,
       c: 1, r: 1,
       dir: 'down',
       moving: false,
-      speed: PLAYER_SPEED,
-      bombsMax: 1, bombsActive: 0,
-      range: 1,
+      speed: prev ? prev.speed : PLAYER_SPEED,
+      bombsMax: prev ? prev.bombsMax : 1,
+      bombsActive: 0,
+      range: prev ? prev.range : 1,
       invulnUntil: 0,
       standingOnBomb: null,
     };
@@ -135,22 +165,26 @@
       x: spot[0] * TILE, y: spot[1] * TILE,
       c: spot[0], r: spot[1],
       dir: ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)],
-      speed: ENEMY_SPEED,
+      speed: ENEMY_SPEED_BASE * levelDef.enemySpeedMult,
       retargetAt: 0,
       alive: true,
     });
   }
 
-  function resetRunState() {
-    generateLevel();
-    player = makePlayer();
+  function startLevel(idx, prevPlayer) {
+    levelIdx = idx;
+    levelDef = LEVELS[idx - 1];
+    COLS = levelDef.cols;
+    ROWS = levelDef.rows;
+    resizeCanvas();
+    generateLevel(levelDef);
+    player = makePlayer(prevPlayer);
     enemies = [];
     bombs = [];
     explosions = [];
     powerups = [];
-    score = 0;
-    lives = START_LIVES;
-    timeLeft = GAME_TIME;
+    timeLeft = levelDef.time;
+    levelClearPending = false;
     nextEnemySpawnAt = 800;
     spawnEnemy();
   }
@@ -222,6 +256,7 @@
         if (grid[r][c] === TILE_CRATE) {
           grid[r][c] = TILE_EMPTY;
           score += SCORE.crate;
+          cratesRemaining--;
           if (Math.random() < POWERUP_CHANCE) {
             powerups.push({ c, r, type: POWERUP_TYPES[Math.floor(Math.random() * POWERUP_TYPES.length)] });
           }
@@ -248,6 +283,8 @@
         score += SCORE.enemy;
       }
     });
+
+    if (cratesRemaining <= 0) levelClearPending = true;
   }
 
   function damagePlayer() {
@@ -324,7 +361,6 @@
       const [dc, dr] = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[en.dir];
       const dist = en.speed * TILE * dt;
       const nx = en.x + dc * dist, ny = en.y + dr * dist;
-      const margin = TILE * 0.3;
       const c = Math.floor((nx + TILE / 2) / TILE), r = Math.floor((ny + TILE / 2) / TILE);
       if (!isSolid(c, r)) {
         en.x = nx; en.y = ny;
@@ -334,13 +370,12 @@
       en.c = Math.round(en.x / TILE);
       en.r = Math.round(en.y / TILE);
 
-      const pc = Math.round(player.x / TILE), pr = Math.round(player.y / TILE);
       if (Math.abs(en.x - player.x) < TILE * 0.6 && Math.abs(en.y - player.y) < TILE * 0.6) {
         damagePlayer();
       }
     }
     enemies = enemies.filter((en) => en.alive);
-    if (enemies.length < MAX_ENEMIES && now > nextEnemySpawnAt) {
+    if (enemies.length < levelDef.enemyMax && now > nextEnemySpawnAt) {
       spawnEnemy();
       nextEnemySpawnAt = now + ENEMY_RESPAWN_MS;
     }
@@ -362,7 +397,7 @@
     if (type === 'speed') player.speed = Math.min(player.speed + 0.5, 5.5);
     else if (type === 'range') player.range = Math.min(player.range + 1, 6);
     else if (type === 'bomb') player.bombsMax = Math.min(player.bombsMax + 1, 4);
-    else if (type === 'time') timeLeft = Math.min(timeLeft + 5, GAME_TIME + 30);
+    else if (type === 'time') timeLeft = Math.min(timeLeft + 5, levelDef.time + 30);
   }
 
   function update(dt) {
@@ -377,13 +412,47 @@
     bombs = bombs.filter((b) => b.alive || now - b.placedAt < b.fuse + EXPLOSION_LIFE);
     explosions = explosions.filter((ex) => now - ex.startedAt < EXPLOSION_LIFE);
 
-    timeLeft -= dt;
-    if (timeLeft <= 0) { timeLeft = 0; endRun('time'); }
+    if (levelClearPending) {
+      levelClearPending = false;
+      handleLevelClear();
+      return;
+    }
 
+    timeLeft -= dt;
+    if (timeLeft <= 0) { timeLeft = 0; endRun('time'); return; }
+
+    hudLevel.textContent = `🏢 ${levelIdx}/${LEVELS.length}`;
     hudTimer.textContent = `⏱ ${Math.ceil(timeLeft)}`;
     hudTimer.classList.toggle('low', timeLeft <= 10);
     hudScore.textContent = `✨ ${score}`;
     renderLives();
+  }
+
+  function handleLevelClear() {
+    running = false;
+    const bonus = LEVEL_CLEAR_BASE + Math.round(timeLeft) * 2;
+    score += bonus;
+    hudScore.textContent = `✨ ${score}`;
+
+    if (levelIdx >= LEVELS.length) {
+      endRun('victory');
+      return;
+    }
+
+    const nextIdx = levelIdx + 1;
+    const nextDef = LEVELS[nextIdx - 1];
+    levelBannerNum.textContent = `POZIOM ${nextIdx}`;
+    levelBannerSub.textContent = `+${bonus} pkt bonusu • ${nextDef.name}`;
+    levelBanner.hidden = false;
+
+    setTimeout(() => {
+      const prevPlayer = player;
+      startLevel(nextIdx, prevPlayer);
+      levelBanner.hidden = true;
+      running = true;
+      lastTs = performance.now();
+      requestAnimationFrame(loop);
+    }, LEVEL_BANNER_MS);
   }
 
   function renderLives() {
@@ -409,10 +478,19 @@
     ctx.closePath();
   }
 
+  function shade(hex, amt) {
+    const n = parseInt(hex.slice(1), 16);
+    let r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+    r = Math.max(0, Math.min(255, Math.round(r + amt)));
+    g = Math.max(0, Math.min(255, Math.round(g + amt)));
+    b = Math.max(0, Math.min(255, Math.round(b + amt)));
+    return `rgb(${r},${g},${b})`;
+  }
+
   function drawFloor() {
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) {
-        ctx.fillStyle = (r + c) % 2 === 0 ? '#E7DFCC' : '#DED4BC';
+        ctx.fillStyle = (r + c) % 2 === 0 ? levelDef.floorA : levelDef.floorB;
         ctx.fillRect(c * TILE, r * TILE, TILE, TILE);
       }
     }
@@ -420,13 +498,14 @@
 
   function drawWall(c, r) {
     const x = c * TILE, y = r * TILE;
-    ctx.fillStyle = '#3B4252';
+    const base = levelDef.wall;
+    ctx.fillStyle = base;
     roundRect(x + 2, y + 2, TILE - 4, TILE - 4, 5);
     ctx.fill();
-    ctx.fillStyle = '#4B5468';
+    ctx.fillStyle = shade(base, 24);
     ctx.fillRect(x + 5, y + 6, TILE - 10, TILE * 0.4);
     ctx.fillRect(x + 5, y + TILE * 0.52, TILE - 10, TILE * 0.4);
-    ctx.fillStyle = '#8B95A8';
+    ctx.fillStyle = shade(base, 90);
     ctx.beginPath();
     ctx.arc(x + TILE - 11, y + TILE * 0.26, 2.4, 0, Math.PI * 2);
     ctx.arc(x + TILE - 11, y + TILE * 0.72, 2.4, 0, Math.PI * 2);
@@ -593,7 +672,7 @@
     lastTs = ts;
     update(dt);
     render();
-    requestAnimationFrame(loop);
+    if (running) requestAnimationFrame(loop);
   }
 
   // ---------------------------------------------------------------------
@@ -603,7 +682,7 @@
     const wrap = $('canvas-wrap');
     const availW = wrap.clientWidth - 16;
     const availH = wrap.clientHeight - 16;
-    TILE = Math.max(24, Math.floor(Math.min(availW / COLS, availH / ROWS)));
+    TILE = Math.max(20, Math.floor(Math.min(availW / COLS, availH / ROWS)));
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas.style.width = `${TILE * COLS}px`;
     canvas.style.height = `${TILE * ROWS}px`;
@@ -619,8 +698,10 @@
   function startRun(nick) {
     currentNick = nick;
     showScreen(screenGame);
-    resizeCanvas();
-    resetRunState();
+    levelBanner.hidden = true;
+    score = 0;
+    lives = START_LIVES;
+    startLevel(1, null);
     running = true;
     lastTs = performance.now();
     requestAnimationFrame(loop);
@@ -630,10 +711,16 @@
     running = false;
     keys.up = keys.down = keys.left = keys.right = false;
 
-    resultTitle.textContent = reason === 'dead' ? 'Wypadek przy biurku!' : 'Koniec czasu!';
-    resultSub.textContent = reason === 'dead'
-      ? 'Uważaj na zbuntowane zszywacze następnym razem.'
-      : 'Ale akcja w open space!';
+    if (reason === 'victory') {
+      resultTitle.textContent = 'Ukończone wszystkie 10 poziomów!';
+      resultSub.textContent = 'Legenda open space’u. Szacunek.';
+    } else if (reason === 'dead') {
+      resultTitle.textContent = 'Wypadek przy biurku!';
+      resultSub.textContent = `Dotarłeś do poziomu ${levelIdx}/${LEVELS.length}. Uważaj na zbuntowane zszywacze następnym razem.`;
+    } else {
+      resultTitle.textContent = 'Koniec czasu!';
+      resultSub.textContent = `Dotarłeś do poziomu ${levelIdx}/${LEVELS.length}. Ale akcja w open space!`;
+    }
     resultScore.textContent = String(score);
     resultRank.textContent = 'Wysyłanie wyniku…';
     showScreen(screenResults);
@@ -722,6 +809,7 @@
     const err = validateNick(nickInput.value);
     if (err) { menuError.textContent = err; return; }
     menuError.textContent = '';
+    localStorage.setItem('kbk-office-nick', nickInput.value.trim());
     startRun(nickInput.value.trim());
   });
   nickInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') playBtn.click(); });
@@ -731,7 +819,6 @@
 
   const savedNick = localStorage.getItem('kbk-office-nick');
   if (savedNick) nickInput.value = savedNick;
-  playBtn.addEventListener('click', () => localStorage.setItem('kbk-office-nick', nickInput.value.trim()));
 
   loadLeaderboard(null, null, miniBoardList);
 })();

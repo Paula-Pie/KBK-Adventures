@@ -257,6 +257,32 @@
     border-radius:4px;
   }
 
+  #level-banner{
+    position:absolute; inset:0;
+    z-index:8;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:6px;
+    background:rgba(10,8,6,.72);
+    color:#fff;
+    text-align:center;
+    animation:banner-in .25s ease;
+  }
+  #level-banner[hidden]{display:none;}
+  @keyframes banner-in{from{opacity:0;}to{opacity:1;}}
+  .level-banner-num{
+    font-family:'Baloo 2',sans-serif;
+    font-weight:800;
+    font-size:clamp(2rem, 9vw, 3rem);
+    color:var(--red);
+    -webkit-text-stroke:2px #fff;
+    paint-order:stroke fill;
+  }
+  .level-banner-sub{
+    font-size:.95rem;
+    opacity:.85;
+    font-weight:600;
+  }
+
   #touch-controls{
     position:absolute;
     left:0; right:0; bottom:0;
@@ -383,10 +409,6 @@
   <!-- MENU -->
   <section id="screen-menu" class="screen">
     <div class="menu-card">
-      <div class="logo-wrap">
-        <p class="logo-kbk">KBK</p>
-        <p class="logo-office">OFFICE</p>
-      </div>
       <p class="tagline">Wysadzaj kartony spinaczami, zbieraj punkty i wejdź na szczyt biurowego rankingu.</p>
 
       <label class="field-label" for="nick-input">Twój nick</label>
@@ -413,6 +435,7 @@
   <section id="screen-game" class="screen" hidden>
     <div id="hud">
       <div class="hud-group">
+        <div class="hud-pill" id="hud-level">🏢 1/10</div>
         <div class="hud-pill timer" id="hud-timer">⏱ 90</div>
         <div class="hud-pill" id="hud-score">✨ 0</div>
       </div>
@@ -422,6 +445,10 @@
     </div>
     <div id="canvas-wrap">
       <canvas id="game-canvas"></canvas>
+      <div id="level-banner" hidden>
+        <div class="level-banner-num" id="level-banner-num">POZIOM 2</div>
+        <div class="level-banner-sub" id="level-banner-sub">Trudność rośnie…</div>
+      </div>
     </div>
     <div id="touch-controls">
       <div class="dpad" aria-hidden="true">

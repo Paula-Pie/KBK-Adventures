@@ -12,7 +12,7 @@ const REST_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_RE
 
 const LEADERBOARD_KEY = 'kbk-office:leaderboard'; // sorted set: member=nick, score=best score
 const META_KEY = 'kbk-office:meta'; // hash: nick -> JSON { score, ts }
-const MAX_SCORE = 5000; // loose anti-cheat ceiling (see README for how it's derived)
+const MAX_SCORE = 25000; // loose anti-cheat ceiling — 10 levels, big late-game crate/enemy counts add up
 const TOP_N = 20;
 
 async function redis(command) {
