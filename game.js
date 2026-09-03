@@ -47,8 +47,8 @@
   ];
 
   const playerSprite = new Image();
-  playerSprite.src = 'assets/player.png?v=2';
-  const PLAYER_SPRITE_ASPECT = 296 / 380; // width / height of assets/player.png
+  playerSprite.src = 'assets/player.png?v=3';
+  const PLAYER_SPRITE_ASPECT = 328 / 380; // width / height of assets/player.png
 
   // ---------------------------------------------------------------------
   // DOM
