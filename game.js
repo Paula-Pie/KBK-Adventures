@@ -37,9 +37,7 @@
   const ENEMY_KINDS = [
     { id: 'stapler', minLevel: 1, speedMult: 1.00, score: 50, weight: 5 },
     { id: 'printer', minLevel: 3, speedMult: 1.15, score: 65, weight: 4 },
-    { id: 'binder', minLevel: 5, speedMult: 0.90, score: 75, weight: 3 },
-    { id: 'mug', minLevel: 7, speedMult: 1.30, score: 85, weight: 3 },
-    { id: 'boss', minLevel: 9, speedMult: 1.45, score: 150, weight: 1 },
+    { id: 'mug', minLevel: 6, speedMult: 1.30, score: 85, weight: 3 },
   ];
 
   const playerSprite = new Image();
@@ -694,29 +692,6 @@
     ctx.stroke();
   }
 
-  function drawBinder() {
-    ctx.fillStyle = '#2F5FA8';
-    roundRect(-TILE * 0.21, -TILE * 0.32, TILE * 0.42, TILE * 0.64, 6);
-    ctx.fill();
-    ctx.fillStyle = '#9FB6DA';
-    ctx.beginPath();
-    ctx.arc(-TILE * 0.08, -TILE * 0.22, 3.4, 0, Math.PI * 2);
-    ctx.arc(TILE * 0.08, -TILE * 0.22, 3.4, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#1B3A6B';
-    ctx.lineWidth = 1.8;
-    ctx.beginPath();
-    ctx.moveTo(-9, -2); ctx.lineTo(-4, 2);
-    ctx.moveTo(9, -2); ctx.lineTo(4, 2);
-    ctx.stroke();
-    drawEnemyEyes(6, false);
-    ctx.strokeStyle = '#1B3A6B';
-    ctx.lineWidth = 1.6;
-    ctx.beginPath();
-    ctx.moveTo(-5, 16); ctx.lineTo(5, 16);
-    ctx.stroke();
-  }
-
   function drawMug(now) {
     ctx.strokeStyle = '#8B5A2B';
     ctx.lineWidth = 4;
@@ -742,37 +717,6 @@
     ctx.stroke();
   }
 
-  function drawBoss(now) {
-    const pulse = 0.5 + Math.sin(now / 250) * 0.5;
-    ctx.strokeStyle = `rgba(255,65,54,${0.25 + pulse * 0.35})`;
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.arc(0, 0, TILE * 0.42, 0, Math.PI * 2);
-    ctx.stroke();
-
-    ctx.fillStyle = '#7A1620';
-    roundRect(-TILE * 0.33, -TILE * 0.3, TILE * 0.66, TILE * 0.58, 10);
-    ctx.fill();
-    ctx.fillStyle = '#4A0E15';
-    ctx.fillRect(-TILE * 0.33, TILE * 0.04, TILE * 0.66, TILE * 0.09);
-
-    // horns
-    ctx.fillStyle = '#4A0E15';
-    ctx.beginPath();
-    ctx.moveTo(-TILE * 0.2, -TILE * 0.28); ctx.lineTo(-TILE * 0.28, -TILE * 0.44); ctx.lineTo(-TILE * 0.1, -TILE * 0.3);
-    ctx.closePath();
-    ctx.moveTo(TILE * 0.2, -TILE * 0.28); ctx.lineTo(TILE * 0.28, -TILE * 0.44); ctx.lineTo(TILE * 0.1, -TILE * 0.3);
-    ctx.closePath();
-    ctx.fill();
-
-    drawEnemyEyes(-4, true);
-    ctx.strokeStyle = '#2b0507';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(-7, 9); ctx.lineTo(-2, 12); ctx.lineTo(0, 8); ctx.lineTo(2, 12); ctx.lineTo(7, 9);
-    ctx.stroke();
-  }
-
   function drawEnemy(en, now) {
     const cx = en.x + TILE / 2, cy = en.y + TILE / 2;
     const bob = Math.sin(now / 140 + en.c) * 1.6;
@@ -785,9 +729,7 @@
 
     switch (en.kind) {
       case 'printer': drawPrinter(now); break;
-      case 'binder': drawBinder(); break;
       case 'mug': drawMug(now); break;
-      case 'boss': drawBoss(now); break;
       default: drawStapler();
     }
 
