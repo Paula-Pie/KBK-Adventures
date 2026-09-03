@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<title>KBK OFFICE</title>
+<meta name="description" content="Biurowa gra w stylu Bombermana — wysadzaj kartony spinaczami i wejdź na szczyt rankingu." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red:#E31E24;
+    --red-dark:#A8121A;
+    --ink:#242220;
+    --paper:#F4EFE4;
+    --paper-2:#E7DFCC;
+    --cabinet:#4B5468;
+    --cabinet-dark:#363D4B;
+    --amber:#FFB020;
+    --flame:#FF6B35;
+    --line:#00000022;
+    --card-bg:#FFFFFFEE;
+    --shadow:0 18px 40px -14px rgba(30,20,10,.35);
+    --good:#2E9E5B;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#EFEAE0;
+      --paper:#1B1B1F;
+      --paper-2:#242429;
+      --card-bg:#26252BEE;
+      --line:#FFFFFF22;
+      --shadow:0 18px 40px -14px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#EFEAE0;
+    --paper:#1B1B1F;
+    --paper-2:#242429;
+    --card-bg:#26252BEE;
+    --line:#FFFFFF22;
+    --shadow:0 18px 40px -14px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Rubik',system-ui,sans-serif;
+    overscroll-behavior:none;
+    -webkit-tap-highlight-color:transparent;
+    user-select:none;
+  }
+  h1,h2,h3,.display{font-family:'Baloo 2',system-ui,sans-serif;}
+
+  #app{
+    position:relative;
+    width:100%;
+    height:100dvh;
+    overflow:hidden;
+    display:flex;
+    align-items:stretch;
+    justify-content:stretch;
+  }
+
+  .screen{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    padding:24px;
+  }
+  .screen[hidden]{display:none;}
+
+  /* ---------- MENU ---------- */
+  #screen-menu{
+    background:
+      linear-gradient(180deg, rgba(15,12,10,.35), rgba(15,12,10,.72) 70%, rgba(10,8,6,.88)),
+      url('assets/cover.jpg') center 18%/cover no-repeat;
+  }
+  .menu-card{
+    width:min(420px, 92vw);
+    background:var(--card-bg);
+    backdrop-filter:blur(6px);
+    border-radius:26px;
+    box-shadow:var(--shadow);
+    padding:28px 26px 24px;
+    text-align:center;
+    border:1px solid var(--line);
+  }
+  .logo-wrap{margin-bottom:6px;}
+  .logo-kbk{
+    font-size:clamp(2.1rem,9vw,2.6rem);
+    font-weight:800;
+    color:var(--red);
+    -webkit-text-stroke:2px #fff;
+    paint-order:stroke fill;
+    letter-spacing:.5px;
+    line-height:1;
+    margin:0;
+  }
+  .logo-office{
+    font-size:clamp(1.1rem,5vw,1.35rem);
+    font-weight:700;
+    letter-spacing:6px;
+    color:var(--ink);
+    margin:2px 0 14px;
+  }
+  .tagline{
+    font-size:.92rem;
+    opacity:.75;
+    margin:0 0 20px;
+    line-height:1.4;
+  }
+  .field-label{
+    display:block;
+    text-align:left;
+    font-size:.72rem;
+    font-weight:700;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    opacity:.6;
+    margin:0 0 6px 4px;
+  }
+  #nick-input{
+    width:100%;
+    font-family:'Rubik',sans-serif;
+    font-size:1.05rem;
+    font-weight:600;
+    padding:14px 16px;
+    border-radius:14px;
+    border:2px solid var(--line);
+    background:var(--paper);
+    color:var(--ink);
+    outline:none;
+    margin-bottom:14px;
+  }
+  #nick-input:focus{border-color:var(--red);}
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    gap:8px;
+    font-family:'Baloo 2',sans-serif;
+    font-weight:700;
+    font-size:1.15rem;
+    letter-spacing:.5px;
+    border:none;
+    border-radius:16px;
+    padding:15px 20px;
+    cursor:pointer;
+    width:100%;
+    transition:transform .08s ease;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-primary{
+    background:linear-gradient(180deg, var(--red), var(--red-dark));
+    color:#fff;
+    box-shadow:0 10px 22px -8px rgba(227,30,36,.6);
+  }
+  .btn-ghost{
+    background:transparent;
+    color:var(--ink);
+    border:2px solid var(--line);
+    font-size:.95rem;
+    padding:11px 16px;
+  }
+  .menu-error{
+    color:var(--red);
+    font-size:.85rem;
+    font-weight:600;
+    min-height:1.2em;
+    margin-top:8px;
+  }
+  .controls-hint{
+    margin-top:16px;
+    font-size:.78rem;
+    opacity:.6;
+    display:flex;
+    gap:14px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+
+  .mini-board{
+    margin-top:18px;
+    text-align:left;
+    border-top:1px dashed var(--line);
+    padding-top:14px;
+  }
+  .mini-board h3{
+    margin:0 0 8px;
+    font-size:.95rem;
+    display:flex; align-items:center; gap:6px;
+  }
+  .mini-row{
+    display:flex; align-items:center; gap:8px;
+    font-size:.88rem;
+    padding:4px 0;
+    font-variant-numeric:tabular-nums;
+  }
+  .mini-rank{
+    width:20px; text-align:center; font-weight:800; opacity:.6; font-size:.8rem;
+  }
+  .mini-nick{flex:1; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .mini-score{font-weight:700; color:var(--red);}
+
+  /* ---------- GAME ---------- */
+  #screen-game{padding:0; justify-content:flex-start; background:var(--cabinet-dark);}
+  #hud{
+    position:absolute; top:0; left:0; right:0;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 14px;
+    padding-top:max(10px, env(safe-area-inset-top));
+    background:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,0));
+    color:#fff;
+    z-index:5;
+    font-family:'Baloo 2',sans-serif;
+    pointer-events:none;
+  }
+  .hud-group{display:flex; align-items:center; gap:10px;}
+  .hud-pill{
+    background:rgba(0,0,0,.35);
+    border:1px solid rgba(255,255,255,.2);
+    border-radius:12px;
+    padding:6px 12px;
+    font-size:1rem;
+    font-variant-numeric:tabular-nums;
+    display:flex; align-items:center; gap:6px;
+  }
+  .hud-pill.timer.low{color:var(--flame); animation:pulse 1s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+  .lives{display:flex; gap:4px;}
+  .life-icon{width:18px; height:18px; opacity:1;}
+  .life-icon.lost{opacity:.25;}
+
+  #canvas-wrap{
+    flex:1;
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+  }
+  #game-canvas{
+    background:var(--paper-2);
+    touch-action:none;
+    box-shadow:0 0 0 6px var(--cabinet), 0 20px 50px -20px rgba(0,0,0,.6);
+    border-radius:4px;
+  }
+
+  #touch-controls{
+    position:absolute;
+    left:0; right:0; bottom:0;
+    display:flex; align-items:flex-end; justify-content:space-between;
+    padding:0 18px max(16px, env(safe-area-inset-bottom));
+    pointer-events:none;
+    z-index:6;
+  }
+  .dpad{
+    display:grid;
+    grid-template-columns:52px 52px 52px;
+    grid-template-rows:52px 52px 52px;
+    gap:4px;
+    pointer-events:auto;
+    opacity:.88;
+  }
+  .dpad button{
+    grid-area:auto;
+    background:rgba(20,20,24,.55);
+    border:1px solid rgba(255,255,255,.25);
+    border-radius:12px;
+    color:#fff;
+    font-size:1.2rem;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .dpad button:active{background:rgba(227,30,36,.7);}
+  #dpad-up{grid-column:2; grid-row:1;}
+  #dpad-left{grid-column:1; grid-row:2;}
+  #dpad-right{grid-column:3; grid-row:2;}
+  #dpad-down{grid-column:2; grid-row:3;}
+
+  #bomb-btn{
+    pointer-events:auto;
+    width:76px; height:76px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #3a3a3a, #0e0e0e 70%);
+    border:3px solid var(--red);
+    color:#fff;
+    font-size:1.7rem;
+    box-shadow:0 8px 18px -6px rgba(0,0,0,.7);
+    align-self:flex-end;
+    margin-bottom:2px;
+  }
+  #bomb-btn:active{transform:scale(.92);}
+
+  /* ---------- RESULTS ---------- */
+  #screen-results{
+    background:linear-gradient(180deg, var(--cabinet-dark), var(--paper));
+  }
+  .result-card{
+    width:min(440px, 92vw);
+    max-height:88vh;
+    overflow-y:auto;
+    background:var(--card-bg);
+    border-radius:26px;
+    box-shadow:var(--shadow);
+    padding:26px;
+    text-align:center;
+    border:1px solid var(--line);
+  }
+  .result-title{
+    margin:0 0 4px;
+    font-size:1.4rem;
+    color:var(--red);
+  }
+  .result-sub{font-size:.85rem; opacity:.7; margin:0 0 14px;}
+  .score-big{
+    font-family:'Baloo 2',sans-serif;
+    font-size:3.4rem;
+    font-weight:800;
+    line-height:1;
+    margin:8px 0 2px;
+    font-variant-numeric:tabular-nums;
+  }
+  .score-label{font-size:.78rem; letter-spacing:2px; text-transform:uppercase; opacity:.55; margin-bottom:16px;}
+  .rank-badge{
+    display:inline-block;
+    margin:0 0 18px;
+    padding:6px 14px;
+    border-radius:999px;
+    background:var(--paper-2);
+    font-weight:700;
+    font-size:.9rem;
+  }
+
+  table.board{
+    width:100%;
+    border-collapse:collapse;
+    text-align:left;
+    font-size:.92rem;
+    margin-top:6px;
+  }
+  table.board th{
+    font-size:.68rem; letter-spacing:1px; text-transform:uppercase; opacity:.5;
+    padding:4px 6px; text-align:left; font-weight:700;
+  }
+  table.board td{
+    padding:8px 6px;
+    border-top:1px solid var(--line);
+    font-variant-numeric:tabular-nums;
+  }
+  table.board tr.me td{
+    background:rgba(227,30,36,.1);
+    font-weight:700;
+    border-radius:8px;
+  }
+  table.board td.rank{width:28px; font-weight:800; opacity:.65;}
+  table.board td.score{text-align:right; color:var(--red); font-weight:700;}
+  .medal{font-size:1rem;}
+
+  .result-actions{display:flex; flex-direction:column; gap:10px; margin-top:20px;}
+
+  /* utility */
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+
+  @media (min-width: 720px){
+    .controls-hint{font-size:.85rem;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- MENU -->
+  <section id="screen-menu" class="screen">
+    <div class="menu-card">
+      <div class="logo-wrap">
+        <p class="logo-kbk">KBK</p>
+        <p class="logo-office">OFFICE</p>
+      </div>
+      <p class="tagline">Wysadzaj kartony spinaczami, zbieraj punkty i wejdź na szczyt biurowego rankingu.</p>
+
+      <label class="field-label" for="nick-input">Twój nick</label>
+      <input id="nick-input" type="text" maxlength="20" placeholder="np. Marek z Handlowego" autocomplete="off" />
+      <div id="menu-error" class="menu-error"></div>
+
+      <button id="play-btn" class="btn btn-primary">▶ GRAJ</button>
+
+      <div class="controls-hint">
+        <span>⌨️ Strzałki / WASD — ruch</span>
+        <span>␣ Spacja — spinacz-bomba</span>
+      </div>
+
+      <div class="mini-board">
+        <h3>🏆 Ranking na żywo</h3>
+        <div id="mini-board-list">
+          <div class="mini-row"><span class="mini-nick" style="opacity:.5">Ładowanie…</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GAME -->
+  <section id="screen-game" class="screen" hidden>
+    <div id="hud">
+      <div class="hud-group">
+        <div class="hud-pill timer" id="hud-timer">⏱ 90</div>
+        <div class="hud-pill" id="hud-score">✨ 0</div>
+      </div>
+      <div class="hud-group">
+        <div class="lives" id="hud-lives"></div>
+      </div>
+    </div>
+    <div id="canvas-wrap">
+      <canvas id="game-canvas"></canvas>
+    </div>
+    <div id="touch-controls">
+      <div class="dpad" aria-hidden="true">
+        <button id="dpad-up">▲</button>
+        <button id="dpad-left">◀</button>
+        <button id="dpad-right">▶</button>
+        <button id="dpad-down">▼</button>
+      </div>
+      <button id="bomb-btn" aria-label="Podłóż bombę">📎</button>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="screen-results" class="screen" hidden>
+    <div class="result-card">
+      <h2 class="result-title" id="result-title">Koniec gry!</h2>
+      <p class="result-sub" id="result-sub">Świetna robota.</p>
+      <div class="score-big" id="result-score">0</div>
+      <div class="score-label">punktów</div>
+      <div class="rank-badge" id="result-rank">—</div>
+
+      <table class="board" id="result-board">
+        <thead><tr><th>#</th><th>Nick</th><th style="text-align:right">Wynik</th></tr></thead>
+        <tbody id="result-board-body"></tbody>
+      </table>
+
+      <div class="result-actions">
+        <button id="retry-btn" class="btn btn-primary">🔁 ZAGRAJ PONOWNIE</button>
+        <button id="menu-btn" class="btn btn-ghost">Zmień nick / menu</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+<script src="game.js"></script>
+</body>
+</html>
