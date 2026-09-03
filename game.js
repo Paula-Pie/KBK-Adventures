@@ -99,6 +99,7 @@
   let grid = [];
   let cratesRemaining = 0;
   let levelClearPending = false;
+  let firstCrateDone = false;
   let player, enemies, bombs, explosions, powerups;
   let score = 0, lives = START_LIVES, timeLeft = 55;
   let running = false;
@@ -226,6 +227,7 @@
     powerups = [];
     timeLeft = levelDef.time;
     levelClearPending = false;
+    firstCrateDone = false;
     nextEnemySpawnAt = performance.now() + ENEMY_RESPAWN_MS;
     if (levelDef.enemyMax > 0) spawnEnemy();
   }
@@ -298,10 +300,13 @@
           grid[r][c] = TILE_EMPTY;
           addScore(SCORE.crate);
           cratesRemaining--;
-          if (Math.random() < POWERUP_CHANCE) {
+          if (LIFE_LEVELS.includes(levelIdx) && !firstCrateDone) {
+            powerups.push({ c, r, type: 'life' });
+          } else if (Math.random() < POWERUP_CHANCE) {
             const pool = LIFE_LEVELS.includes(levelIdx) ? [...POWERUP_TYPES, 'life'] : POWERUP_TYPES;
             powerups.push({ c, r, type: pool[Math.floor(Math.random() * pool.length)] });
           }
+          firstCrateDone = true;
           break;
         }
       }
