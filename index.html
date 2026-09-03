@@ -173,6 +173,13 @@
     font-size:.95rem;
     padding:11px 16px;
   }
+  .btn-small{
+    font-size:.78rem;
+    padding:8px 14px;
+    margin-top:8px;
+    border-width:1.5px;
+    opacity:.75;
+  }
   .menu-error{
     color:var(--red);
     font-size:.85rem;
@@ -241,6 +248,33 @@
   .lives{display:flex; gap:4px;}
   .life-icon{width:18px; height:18px; opacity:1;}
   .life-icon.lost{opacity:.25;}
+
+  #tutorial-hint{
+    position:absolute;
+    top:calc(env(safe-area-inset-top, 0px) + 52px);
+    left:0; right:0;
+    z-index:6;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:10px;
+    background:rgba(15,12,10,.72);
+    color:#fff;
+    font-size:.74rem;
+    line-height:1.3;
+    padding:7px 12px;
+  }
+  #tutorial-hint[hidden]{display:none;}
+  #tutorial-hint span{flex:1;}
+  #skip-tutorial-btn{
+    flex-shrink:0;
+    background:rgba(255,255,255,.15);
+    border:1px solid rgba(255,255,255,.35);
+    color:#fff;
+    font-size:.72rem;
+    font-weight:700;
+    padding:5px 10px;
+    border-radius:8px;
+  }
+  #skip-tutorial-btn:active{background:rgba(227,30,36,.6);}
 
   #canvas-wrap{
     flex:1;
@@ -416,6 +450,7 @@
       <div id="menu-error" class="menu-error"></div>
 
       <button id="play-btn" class="btn btn-primary">▶ GRAJ</button>
+      <button id="tutorial-btn" class="btn btn-ghost btn-small">🎓 Jak grać? (samouczek)</button>
 
       <div class="controls-hint">
         <span>⌨️ Strzałki / WASD — ruch</span>
@@ -442,6 +477,10 @@
       <div class="hud-group">
         <div class="lives" id="hud-lives"></div>
       </div>
+    </div>
+    <div id="tutorial-hint" hidden>
+      <span>🎮 Strzałki/WASD = ruch&nbsp; •&nbsp; 📎 Spacja = bomba&nbsp; •&nbsp; 💥 zbij karton, odbierz bonus&nbsp; •&nbsp; 🎯 zbij wszystkie → dalej</span>
+      <button id="skip-tutorial-btn">Pomiń →</button>
     </div>
     <div id="canvas-wrap">
       <canvas id="game-canvas"></canvas>

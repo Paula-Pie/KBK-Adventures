@@ -19,6 +19,12 @@
   const TILE_EMPTY = 0, TILE_WALL = 1, TILE_CRATE = 2;
   const POWERUP_TYPES = ['speed', 'range', 'bomb', 'time'];
 
+  const TUTORIAL = {
+    cols: 11, rows: 7, crateProb: 0.35, enemyMax: 0, enemySpeedMult: 1, time: 90,
+    lane: false, floorA: '#DCEAF2', floorB: '#C9DEEB', wall: '#3A5468',
+    name: 'Samouczek', tutorial: true,
+  };
+
   const LEVELS = [
     { cols: 13, rows: 9, crateProb: 0.50, enemyMax: 2, enemySpeedMult: 1.00, time: 55, lane: false, floorA: '#E7DFCC', floorB: '#DED4BC', wall: '#3B4252', name: 'Recepcja' },
     { cols: 13, rows: 9, crateProb: 0.55, enemyMax: 2, enemySpeedMult: 1.05, time: 55, lane: false, floorA: '#DCEFE3', floorB: '#CBE3D3', wall: '#2F5548', name: 'Open Space' },
@@ -53,6 +59,7 @@
   const screenResults = $('screen-results');
   const nickInput = $('nick-input');
   const playBtn = $('play-btn');
+  const tutorialBtn = $('tutorial-btn');
   const menuError = $('menu-error');
   const miniBoardList = $('mini-board-list');
   const canvas = $('game-canvas');
@@ -64,6 +71,8 @@
   const levelBanner = $('level-banner');
   const levelBannerNum = $('level-banner-num');
   const levelBannerSub = $('level-banner-sub');
+  const tutorialHint = $('tutorial-hint');
+  const skipTutorialBtn = $('skip-tutorial-btn');
   const retryBtn = $('retry-btn');
   const menuBtn = $('menu-btn');
   const resultTitle = $('result-title');
@@ -94,6 +103,11 @@
   let currentNick = '';
 
   const keys = { up: false, down: false, left: false, right: false };
+
+  function addScore(n) {
+    if (levelDef.tutorial) return; // practice level never touches the real score
+    score += n;
+  }
 
   // ---------------------------------------------------------------------
   // Level generation
@@ -195,7 +209,8 @@
 
   function startLevel(idx, prevPlayer) {
     levelIdx = idx;
-    levelDef = LEVELS[idx - 1];
+    levelDef = idx === 0 ? TUTORIAL : LEVELS[idx - 1];
+    if (tutorialHint) tutorialHint.hidden = !levelDef.tutorial;
     COLS = levelDef.cols;
     ROWS = levelDef.rows;
     resizeCanvas();
@@ -208,7 +223,7 @@
     timeLeft = levelDef.time;
     levelClearPending = false;
     nextEnemySpawnAt = 800;
-    spawnEnemy();
+    if (levelDef.enemyMax > 0) spawnEnemy();
   }
 
   // ---------------------------------------------------------------------
@@ -277,7 +292,7 @@
         cells.push({ c, r });
         if (grid[r][c] === TILE_CRATE) {
           grid[r][c] = TILE_EMPTY;
-          score += SCORE.crate;
+          addScore(SCORE.crate);
           cratesRemaining--;
           if (Math.random() < POWERUP_CHANCE) {
             powerups.push({ c, r, type: POWERUP_TYPES[Math.floor(Math.random() * POWERUP_TYPES.length)] });
@@ -302,7 +317,7 @@
       const ec = Math.round(en.x / TILE), er = Math.round(en.y / TILE);
       if (hitSet.has(`${ec},${er}`)) {
         en.alive = false;
-        score += en.scoreValue || SCORE.enemy;
+        addScore(en.scoreValue || SCORE.enemy);
       }
     });
 
@@ -411,7 +426,7 @@
     powerups = powerups.filter((p) => {
       if (p.c === pc && p.r === pr) {
         applyPowerup(p.type);
-        score += SCORE.powerup;
+        addScore(SCORE.powerup);
         return false;
       }
       if (enemyCells.some((ec) => ec.c === p.c && ec.r === p.r)) {
@@ -447,9 +462,13 @@
     }
 
     timeLeft -= dt;
-    if (timeLeft <= 0) { timeLeft = 0; endRun('time'); return; }
+    if (timeLeft <= 0) {
+      timeLeft = 0;
+      if (levelDef.tutorial) { levelClearPending = true; }
+      else { endRun('time'); return; }
+    }
 
-    hudLevel.textContent = `🏢 ${levelIdx}/${LEVELS.length}`;
+    hudLevel.textContent = levelDef.tutorial ? '🎓 Samouczek' : `🏢 ${levelIdx}/${LEVELS.length}`;
     hudTimer.textContent = `⏱ ${Math.ceil(timeLeft)}`;
     hudTimer.classList.toggle('low', timeLeft <= 10);
     hudScore.textContent = `✨ ${score}`;
@@ -458,8 +477,11 @@
 
   function handleLevelClear() {
     running = false;
+    const wasTutorial = levelDef.tutorial;
+    if (wasTutorial) localStorage.setItem('kbk-tutorial-done', '1');
+
     const bonus = LEVEL_CLEAR_BASE + Math.round(timeLeft) * 2;
-    score += bonus;
+    addScore(bonus);
     hudScore.textContent = `✨ ${score}`;
 
     if (levelIdx >= LEVELS.length) {
@@ -469,8 +491,10 @@
 
     const nextIdx = levelIdx + 1;
     const nextDef = LEVELS[nextIdx - 1];
-    levelBannerNum.textContent = `POZIOM ${nextIdx}`;
-    levelBannerSub.textContent = `+${bonus} pkt bonusu • ${nextDef.name}`;
+    levelBannerNum.textContent = wasTutorial ? 'START!' : `POZIOM ${nextIdx}`;
+    levelBannerSub.textContent = wasTutorial
+      ? `Powodzenia! • ${nextDef.name}`
+      : `+${bonus} pkt bonusu • ${nextDef.name}`;
     levelBanner.hidden = false;
 
     setTimeout(() => {
@@ -791,13 +815,14 @@
   // ---------------------------------------------------------------------
   // Run lifecycle
   // ---------------------------------------------------------------------
-  function startRun(nick) {
+  function startRun(nick, forceTutorial) {
     currentNick = nick;
     showScreen(screenGame);
     levelBanner.hidden = true;
     score = 0;
     lives = START_LIVES;
-    startLevel(1, null);
+    const skipTutorial = !forceTutorial && localStorage.getItem('kbk-tutorial-done') === '1';
+    startLevel(skipTutorial ? 1 : 0, null);
     running = true;
     lastTs = performance.now();
     requestAnimationFrame(loop);
@@ -909,6 +934,22 @@
     startRun(nickInput.value.trim());
   });
   nickInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') playBtn.click(); });
+
+  if (tutorialBtn) {
+    tutorialBtn.addEventListener('click', () => {
+      const err = validateNick(nickInput.value);
+      if (err) { menuError.textContent = err; return; }
+      menuError.textContent = '';
+      localStorage.setItem('kbk-office-nick', nickInput.value.trim());
+      startRun(nickInput.value.trim(), true);
+    });
+  }
+
+  if (skipTutorialBtn) {
+    skipTutorialBtn.addEventListener('click', () => {
+      if (running && levelDef.tutorial) levelClearPending = true;
+    });
+  }
 
   retryBtn.addEventListener('click', () => startRun(currentNick));
   menuBtn.addEventListener('click', () => showScreen(screenMenu));
