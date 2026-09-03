@@ -21,6 +21,10 @@
   const TILE_EMPTY = 0, TILE_WALL = 1, TILE_CRATE = 2;
   const POWERUP_TYPES = ['speed', 'range', 'bomb', 'time'];
 
+  const playerSprite = new Image();
+  playerSprite.src = 'assets/player.png';
+  const PLAYER_SPRITE_ASPECT = 165 / 205; // width / height of assets/player.png
+
   // ---------------------------------------------------------------------
   // DOM
   // ---------------------------------------------------------------------
@@ -161,11 +165,17 @@
     ArrowRight: 'right', KeyD: 'right',
   };
 
+  function isTypingTarget(el) {
+    return el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable);
+  }
+
   window.addEventListener('keydown', (e) => {
+    if (isTypingTarget(document.activeElement)) return;
     if (KEY_MAP[e.code]) { keys[KEY_MAP[e.code]] = true; e.preventDefault(); }
     if (e.code === 'Space' && running) { placeBomb(); e.preventDefault(); }
   });
   window.addEventListener('keyup', (e) => {
+    if (isTypingTarget(document.activeElement)) return;
     if (KEY_MAP[e.code]) { keys[KEY_MAP[e.code]] = false; e.preventDefault(); }
   });
 
@@ -505,52 +515,15 @@
     // shadow
     ctx.fillStyle = 'rgba(0,0,0,.18)';
     ctx.beginPath();
-    ctx.ellipse(0, TILE * 0.34, TILE * 0.26, TILE * 0.08, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, TILE * 0.36, TILE * 0.26, TILE * 0.08, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // legs
-    ctx.fillStyle = '#B0121B';
-    ctx.beginPath();
-    ctx.ellipse(-6, TILE * 0.24, 6, 9, 0, 0, Math.PI * 2);
-    ctx.ellipse(6, TILE * 0.24, 6, 9, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // body/head — white with red swirl
-    const r = TILE * 0.32;
-    ctx.fillStyle = '#FFFFFF';
-    ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill();
-    ctx.strokeStyle = '#E31E24';
-    ctx.lineWidth = r * 0.32;
-    ctx.beginPath();
-    ctx.arc(0, 0, r * 0.62, 0.6, Math.PI * 1.7);
-    ctx.stroke();
-    ctx.strokeStyle = '#232220';
-    ctx.lineWidth = 1.4;
-
-    // arms
-    ctx.fillStyle = '#E31E24';
-    const armY = player.moving ? Math.sin(now / 80) * 4 : 0;
-    ctx.beginPath();
-    ctx.arc(-r - 4, armY, 6.5, 0, Math.PI * 2);
-    ctx.arc(r + 4, -armY, 6.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    // face
-    ctx.fillStyle = '#232220';
-    ctx.beginPath();
-    ctx.arc(-r * 0.32, -r * 0.12, 2.6, 0, Math.PI * 2);
-    ctx.arc(r * 0.32, -r * 0.12, 2.6, 0, Math.PI * 2);
-    ctx.fill();
-
-    // paperclip antenna
-    ctx.strokeStyle = '#E31E24';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.ellipse(r * 0.5, -r - 6, 4.5, 9, -0.3, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.ellipse(r * 0.5, -r - 4, 2.4, 5.5, -0.3, 0, Math.PI * 2);
-    ctx.stroke();
+    if (playerSprite.complete && playerSprite.naturalWidth > 0) {
+      const h = TILE * 1.24;
+      const w = h * PLAYER_SPRITE_ASPECT;
+      const squash = player.moving ? 1 - Math.abs(Math.sin(now / 90)) * 0.05 : 1;
+      ctx.drawImage(playerSprite, -w / 2, -h * 0.58 * squash, w, h * squash);
+    }
 
     ctx.restore();
     ctx.globalAlpha = 1;
