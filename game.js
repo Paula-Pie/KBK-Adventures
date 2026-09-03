@@ -20,7 +20,7 @@
   const POWERUP_TYPES = ['speed', 'range', 'bomb', 'time'];
 
   const TUTORIAL = {
-    cols: 11, rows: 7, crateProb: 0.35, enemyMax: 0, enemySpeedMult: 1, time: 90,
+    cols: 11, rows: 7, crateProb: 0.35, enemyMax: 1, enemySpeedMult: 0.7, time: 90,
     lane: false, floorA: '#DCEAF2', floorB: '#C9DEEB', wall: '#3A5468',
     name: 'Samouczek', tutorial: true,
   };
@@ -194,7 +194,7 @@
       [COLS - 2, 1], [1, ROWS - 2], [COLS - 2, ROWS - 2],
     ];
     const spot = corners[Math.floor(Math.random() * corners.length)];
-    const kind = pickEnemyKind();
+    const kind = levelDef.tutorial ? ENEMY_KINDS[0] : pickEnemyKind();
     enemies.push({
       x: spot[0] * TILE, y: spot[1] * TILE,
       c: spot[0], r: spot[1],
@@ -222,7 +222,7 @@
     powerups = [];
     timeLeft = levelDef.time;
     levelClearPending = false;
-    nextEnemySpawnAt = 800;
+    nextEnemySpawnAt = performance.now() + ENEMY_RESPAWN_MS;
     if (levelDef.enemyMax > 0) spawnEnemy();
   }
 
