@@ -100,6 +100,9 @@
   let cratesRemaining = 0;
   let levelClearPending = false;
   let firstCrateDone = false;
+  let lifeDropsThisLevel = 0;
+
+  function lifeCap() { return levelIdx === 10 ? 2 : 1; }
   let player, enemies, bombs, explosions, powerups;
   let score = 0, lives = START_LIVES, timeLeft = 55;
   let running = false;
@@ -228,6 +231,7 @@
     timeLeft = levelDef.time;
     levelClearPending = false;
     firstCrateDone = false;
+    lifeDropsThisLevel = 0;
     nextEnemySpawnAt = performance.now() + ENEMY_RESPAWN_MS;
     if (levelDef.enemyMax > 0) spawnEnemy();
   }
@@ -306,11 +310,15 @@
           grid[r][c] = TILE_EMPTY;
           addScore(SCORE.crate);
           cratesRemaining--;
-          if (LIFE_LEVELS.includes(levelIdx) && !firstCrateDone) {
+          const lifeAllowed = LIFE_LEVELS.includes(levelIdx) && lifeDropsThisLevel < lifeCap();
+          if (lifeAllowed && !firstCrateDone) {
             powerups.push({ c, r, type: 'life' });
+            lifeDropsThisLevel++;
           } else if (Math.random() < POWERUP_CHANCE) {
-            const pool = LIFE_LEVELS.includes(levelIdx) ? [...POWERUP_TYPES, 'life'] : POWERUP_TYPES;
-            powerups.push({ c, r, type: pool[Math.floor(Math.random() * pool.length)] });
+            const pool = lifeAllowed ? [...POWERUP_TYPES, 'life'] : POWERUP_TYPES;
+            const type = pool[Math.floor(Math.random() * pool.length)];
+            if (type === 'life') lifeDropsThisLevel++;
+            powerups.push({ c, r, type });
           }
           firstCrateDone = true;
           break;
