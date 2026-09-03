@@ -5,6 +5,8 @@
   // Config
   // ---------------------------------------------------------------------
   const START_LIVES = 3;
+  const MAX_LIVES = 5;
+  const LIFE_LEVELS = [3, 6, 8, 10]; // levels where the ❤️ extra-life powerup can drop
   const BOMB_FUSE = 1800; // ms
   const EXPLOSION_LIFE = 380; // ms
   const INVULN_MS = 1500;
@@ -297,7 +299,8 @@
           addScore(SCORE.crate);
           cratesRemaining--;
           if (Math.random() < POWERUP_CHANCE) {
-            powerups.push({ c, r, type: POWERUP_TYPES[Math.floor(Math.random() * POWERUP_TYPES.length)] });
+            const pool = LIFE_LEVELS.includes(levelIdx) ? [...POWERUP_TYPES, 'life'] : POWERUP_TYPES;
+            powerups.push({ c, r, type: pool[Math.floor(Math.random() * pool.length)] });
           }
           break;
         }
@@ -443,6 +446,7 @@
     else if (type === 'range') player.range = Math.min(player.range + 1, 6);
     else if (type === 'bomb') player.bombsMax = Math.min(player.bombsMax + 1, 4);
     else if (type === 'time') timeLeft = Math.min(timeLeft + 5, levelDef.time + 30);
+    else if (type === 'life') lives = Math.min(lives + 1, MAX_LIVES);
   }
 
   function update(dt) {
@@ -511,7 +515,8 @@
 
   function renderLives() {
     hudLives.innerHTML = '';
-    for (let i = 0; i < START_LIVES; i++) {
+    const slots = Math.max(START_LIVES, lives);
+    for (let i = 0; i < slots; i++) {
       const span = document.createElement('span');
       span.className = 'life-icon' + (i < lives ? '' : ' lost');
       span.textContent = '📎';
@@ -627,7 +632,7 @@
     }
   }
 
-  const POWERUP_ICON = { speed: '☕', range: '📎', bomb: '🧷', time: '⏱️' };
+  const POWERUP_ICON = { speed: '☕', range: '📎', bomb: '🧷', time: '⏱️', life: '❤️' };
   function drawPowerup(p) {
     const x = p.c * TILE + TILE / 2, y = p.r * TILE + TILE / 2;
     ctx.font = `${TILE * 0.55}px sans-serif`;
