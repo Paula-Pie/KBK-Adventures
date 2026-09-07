@@ -42,6 +42,17 @@
       ],
       correct: 'b',
     },
+    4: {
+      img: 'assets/quiz-screencleaner.jpg',
+      alt: 'TFT/LCD Screen Cleaner d.rect Office',
+      question: 'Ile ml ma nasz płyn TFT/LCD do czyszczenia ekranów?',
+      answers: [
+        { label: 'A) 100 ml', v: '100' },
+        { label: 'B) 150 ml', v: '150' },
+        { label: 'C) 250 ml', v: '250' },
+      ],
+      correct: '250',
+    },
   };
   const LEVEL_BANNER_MS = 1500;
 
