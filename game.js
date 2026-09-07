@@ -656,7 +656,39 @@
     }
   }
 
-  const POWERUP_ICON = { speed: '☕', range: '📎', bomb: '🧷', time: '⏱️' };
+  const POWERUP_ICON = { speed: '☕', range: '📎', bomb: '🧷' };
+
+  function drawClipTimeIcon(x, y) {
+    const r = TILE * 0.24;
+    // clock face
+    ctx.fillStyle = '#FFF8E8';
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#3A3A3A';
+    ctx.lineWidth = 1.6;
+    ctx.stroke();
+    // hands (fixed at ~10:10)
+    ctx.strokeStyle = '#232220';
+    ctx.lineWidth = 1.6;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x - r * 0.42, y - r * 0.5);
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + r * 0.55, y - r * 0.2);
+    ctx.stroke();
+    // paperclip binding the top of the clock
+    ctx.strokeStyle = '#E31E24';
+    ctx.lineWidth = TILE * 0.045;
+    ctx.beginPath();
+    ctx.ellipse(x + r * 0.15, y - r * 1.05, r * 0.42, r * 0.85, -0.15, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.ellipse(x + r * 0.15, y - r * 0.95, r * 0.22, r * 0.5, -0.15, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
   function drawPowerup(p) {
     const x = p.c * TILE + TILE / 2, y = p.r * TILE + TILE / 2;
     if (p.type === 'life') {
@@ -665,6 +697,10 @@
         const w = h * LOGO_SPRITE_ASPECT;
         ctx.drawImage(logoSprite, x - w / 2, y - h / 2, w, h);
       }
+      return;
+    }
+    if (p.type === 'time') {
+      drawClipTimeIcon(x, y);
       return;
     }
     ctx.font = `${TILE * 0.55}px sans-serif`;
