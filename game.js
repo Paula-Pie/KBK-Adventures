@@ -16,8 +16,33 @@
   const POWERUP_CHANCE = 0.32;
   const SCORE = { crate: 10, enemy: 50, powerup: 5 };
   const LEVEL_CLEAR_BASE = 100;
-  const QUIZ_CORRECT_ANSWER = '6';
   const QUIZ_BONUS = 25;
+  // Trivia breaks: keyed by the level number the player is about to enter (i.e. shown right after
+  // clearing the previous one). Each answer's `v` is compared against `correct` to grade it.
+  const QUIZZES = {
+    2: {
+      img: 'assets/quiz-record.jpg',
+      alt: 'record by Leviatan',
+      question: 'Ile kolorów zawiera <strong>record</strong>?',
+      answers: [
+        { label: 'A) 5', v: '5' },
+        { label: 'B) 6', v: '6' },
+        { label: 'C) 8', v: '8' },
+      ],
+      correct: '6',
+    },
+    3: {
+      img: 'assets/quiz-soap.jpg',
+      alt: 'Mydło w płynie d.rect Office',
+      question: 'Jaki zapach zawiera to mydło?',
+      answers: [
+        { label: 'A) owoc granatu', v: 'a' },
+        { label: 'B) pomegranate', v: 'b' },
+        { label: 'C) papaja', v: 'c' },
+      ],
+      correct: 'b',
+    },
+  };
   const LEVEL_BANNER_MS = 1500;
 
   const TILE_EMPTY = 0, TILE_WALL = 1, TILE_CRATE = 2;
@@ -84,7 +109,9 @@
   const tutorialIntro = $('tutorial-intro');
   const introStartBtn = $('intro-start-btn');
   const quizScreen = $('quiz-screen');
-  const quizAnswerBtns = Array.from(document.querySelectorAll('.quiz-answer'));
+  const quizImg = $('quiz-img');
+  const quizQuestion = $('quiz-question');
+  const quizAnswersWrap = $('quiz-answers');
   const quizFeedback = $('quiz-feedback');
   const quizContinueBtn = $('quiz-continue-btn');
   const retryBtn = $('retry-btn');
@@ -536,7 +563,8 @@
       levelBanner.hidden = true;
       const prevPlayer = player;
       const proceed = () => { startLevel(nextIdx, prevPlayer); beginLoop(); };
-      if (nextIdx === 2) showQuiz(proceed);
+      const quiz = QUIZZES[nextIdx];
+      if (quiz) showQuiz(quiz, proceed);
       else proceed();
     }, LEVEL_BANNER_MS);
   }
@@ -932,38 +960,50 @@
 
   let quizAnswered = false;
   let quizOnDone = null;
+  let quizCorrectValue = null;
 
-  function showQuiz(onDone) {
+  function showQuiz(quiz, onDone) {
     quizOnDone = onDone;
     quizAnswered = false;
+    quizCorrectValue = quiz.correct;
+    quizImg.src = quiz.img;
+    quizImg.alt = quiz.alt || '';
+    quizQuestion.innerHTML = quiz.question;
     quizFeedback.textContent = '';
     quizContinueBtn.hidden = true;
-    quizAnswerBtns.forEach((btn) => {
-      btn.disabled = false;
-      btn.classList.remove('correct', 'wrong');
+
+    quizAnswersWrap.innerHTML = '';
+    quiz.answers.forEach((a) => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-answer';
+      btn.dataset.value = a.v;
+      btn.textContent = a.label;
+      btn.addEventListener('click', () => onQuizAnswer(btn));
+      quizAnswersWrap.appendChild(btn);
     });
+
     quizScreen.hidden = false;
   }
 
-  quizAnswerBtns.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      if (quizAnswered) return;
-      quizAnswered = true;
-      const isCorrect = btn.dataset.answer === QUIZ_CORRECT_ANSWER;
-      quizAnswerBtns.forEach((b) => {
-        b.disabled = true;
-        if (b.dataset.answer === QUIZ_CORRECT_ANSWER) b.classList.add('correct');
-        else if (b === btn) b.classList.add('wrong');
-      });
-      if (isCorrect) {
-        addScore(QUIZ_BONUS);
-        quizFeedback.textContent = `Dobrze! +${QUIZ_BONUS} pkt`;
-      } else {
-        quizFeedback.textContent = 'Niestety nie — poprawna odpowiedź to 6.';
-      }
-      quizContinueBtn.hidden = false;
+  function onQuizAnswer(btn) {
+    if (quizAnswered) return;
+    quizAnswered = true;
+    const buttons = Array.from(quizAnswersWrap.children);
+    const isCorrect = btn.dataset.value === quizCorrectValue;
+    buttons.forEach((b) => {
+      b.disabled = true;
+      if (b.dataset.value === quizCorrectValue) b.classList.add('correct');
+      else if (b === btn) b.classList.add('wrong');
     });
-  });
+    if (isCorrect) {
+      addScore(QUIZ_BONUS);
+      quizFeedback.textContent = `Dobrze! +${QUIZ_BONUS} pkt`;
+    } else {
+      const correctLabel = buttons.find((b) => b.dataset.value === quizCorrectValue)?.textContent || '';
+      quizFeedback.textContent = `Niestety nie — poprawna odpowiedź to ${correctLabel}.`;
+    }
+    quizContinueBtn.hidden = false;
+  }
 
   quizContinueBtn.addEventListener('click', () => {
     quizScreen.hidden = true;
