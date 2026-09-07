@@ -86,6 +86,17 @@
       ],
       correct: 'a',
     },
+    9: {
+      img: 'assets/quiz-kawa.jpg',
+      alt: 'Kawa Life Up',
+      question: 'Ile mamy rodzajów kawy?',
+      answers: [
+        { label: 'A) 2', v: '2' },
+        { label: 'B) 3', v: '3' },
+        { label: 'C) 4', v: '4' },
+      ],
+      correct: '4',
+    },
   };
   const LEVEL_BANNER_MS = 1500;
 
