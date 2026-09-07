@@ -86,6 +86,17 @@
       ],
       correct: 'a',
     },
+    8: {
+      img: 'assets/quiz-klej.png',
+      alt: 'Klej na gorąco brokatowy',
+      question: 'Po ile pakujemy nasz klej na gorąco brokatowy?',
+      answers: [
+        { label: 'A) 15', v: '15' },
+        { label: 'B) 60', v: '60' },
+        { label: 'C) 100', v: '100' },
+      ],
+      correct: '60',
+    },
     9: {
       img: 'assets/quiz-kawa.jpg',
       alt: 'Kawa Life Up',
