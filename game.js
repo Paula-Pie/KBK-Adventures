@@ -16,6 +16,8 @@
   const POWERUP_CHANCE = 0.32;
   const SCORE = { crate: 10, enemy: 50, powerup: 5 };
   const LEVEL_CLEAR_BASE = 100;
+  const QUIZ_CORRECT_ANSWER = '6';
+  const QUIZ_BONUS = 25;
   const LEVEL_BANNER_MS = 1500;
 
   const TILE_EMPTY = 0, TILE_WALL = 1, TILE_CRATE = 2;
@@ -81,6 +83,10 @@
   const skipTutorialBtn = $('skip-tutorial-btn');
   const tutorialIntro = $('tutorial-intro');
   const introStartBtn = $('intro-start-btn');
+  const quizScreen = $('quiz-screen');
+  const quizAnswerBtns = Array.from(document.querySelectorAll('.quiz-answer'));
+  const quizFeedback = $('quiz-feedback');
+  const quizContinueBtn = $('quiz-continue-btn');
   const retryBtn = $('retry-btn');
   const menuBtn = $('menu-btn');
   const resultTitle = $('result-title');
@@ -527,12 +533,11 @@
     levelBanner.hidden = false;
 
     setTimeout(() => {
-      const prevPlayer = player;
-      startLevel(nextIdx, prevPlayer);
       levelBanner.hidden = true;
-      running = true;
-      lastTs = performance.now();
-      requestAnimationFrame(loop);
+      const prevPlayer = player;
+      const proceed = () => { startLevel(nextIdx, prevPlayer); beginLoop(); };
+      if (nextIdx === 2) showQuiz(proceed);
+      else proceed();
     }, LEVEL_BANNER_MS);
   }
 
@@ -924,6 +929,46 @@
       beginLoop();
     });
   }
+
+  let quizAnswered = false;
+  let quizOnDone = null;
+
+  function showQuiz(onDone) {
+    quizOnDone = onDone;
+    quizAnswered = false;
+    quizFeedback.textContent = '';
+    quizContinueBtn.hidden = true;
+    quizAnswerBtns.forEach((btn) => {
+      btn.disabled = false;
+      btn.classList.remove('correct', 'wrong');
+    });
+    quizScreen.hidden = false;
+  }
+
+  quizAnswerBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (quizAnswered) return;
+      quizAnswered = true;
+      const isCorrect = btn.dataset.answer === QUIZ_CORRECT_ANSWER;
+      quizAnswerBtns.forEach((b) => {
+        b.disabled = true;
+        if (b.dataset.answer === QUIZ_CORRECT_ANSWER) b.classList.add('correct');
+        else if (b === btn) b.classList.add('wrong');
+      });
+      if (isCorrect) {
+        addScore(QUIZ_BONUS);
+        quizFeedback.textContent = `Dobrze! +${QUIZ_BONUS} pkt`;
+      } else {
+        quizFeedback.textContent = 'Niestety nie — poprawna odpowiedź to 6.';
+      }
+      quizContinueBtn.hidden = false;
+    });
+  });
+
+  quizContinueBtn.addEventListener('click', () => {
+    quizScreen.hidden = true;
+    if (quizOnDone) { quizOnDone(); quizOnDone = null; }
+  });
 
   async function endRun(reason) {
     running = false;

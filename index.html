@@ -357,6 +357,56 @@
   .intro-icon{flex-shrink:0; font-size:1.1rem; width:1.6em; text-align:center;}
   #intro-start-btn{margin-top:14px;}
 
+  #quiz-screen{
+    position:absolute; inset:0;
+    z-index:9;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(10,8,6,.78);
+    padding:16px;
+  }
+  #quiz-screen[hidden]{display:none;}
+  .quiz-card{text-align:center;}
+  .quiz-img{
+    display:block;
+    width:100%;
+    max-height:34vh;
+    object-fit:contain;
+    border-radius:12px;
+    margin:4px 0 12px;
+    background:#fff;
+  }
+  .quiz-question{
+    font-weight:700;
+    font-size:1.02rem;
+    margin:0 0 12px;
+  }
+  .quiz-answers{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:8px;
+  }
+  .quiz-answer{
+    font-family:'Rubik',sans-serif;
+    font-weight:700;
+    font-size:.95rem;
+    padding:12px 6px;
+    border-radius:12px;
+    border:2px solid var(--line);
+    background:var(--paper);
+    color:var(--ink);
+    cursor:pointer;
+  }
+  .quiz-answer.correct{background:var(--good); border-color:var(--good); color:#fff;}
+  .quiz-answer.wrong{background:var(--red); border-color:var(--red); color:#fff;}
+  .quiz-answer:disabled{opacity:.7; cursor:default;}
+  .quiz-feedback{
+    min-height:1.4em;
+    font-weight:700;
+    font-size:.9rem;
+    margin:12px 0 0;
+  }
+  #quiz-continue-btn{margin-top:12px;}
+
   #touch-controls{
     position:absolute;
     left:0; right:0; bottom:0;
@@ -566,6 +616,20 @@
           <div class="intro-row"><span class="intro-icon">⚠️</span><span>Uważaj na biurowych przeciwników — dotyk kosztuje życie (ale możesz ich wysadzić bombą za punkty!)</span></div>
           <div class="intro-row"><span class="intro-icon">🎯</span><span>Cel: zbij wszystkie kartony na planszy, żeby przejść na kolejny poziom</span></div>
           <button id="intro-start-btn" class="btn btn-primary">Zaczynamy! →</button>
+        </div>
+      </div>
+      <div id="quiz-screen" hidden>
+        <div class="intro-card quiz-card">
+          <h3>Biurowa przerwa na quiz!</h3>
+          <img class="quiz-img" src="assets/quiz-record.jpg" alt="record by Leviatan" />
+          <p class="quiz-question">Ile kolorów zawiera <strong>record</strong>?</p>
+          <div class="quiz-answers">
+            <button class="quiz-answer" data-answer="5">A) 5</button>
+            <button class="quiz-answer" data-answer="6">B) 6</button>
+            <button class="quiz-answer" data-answer="8">C) 8</button>
+          </div>
+          <p class="quiz-feedback" id="quiz-feedback"></p>
+          <button id="quiz-continue-btn" class="btn btn-primary" hidden>Dalej →</button>
         </div>
       </div>
     </div>
