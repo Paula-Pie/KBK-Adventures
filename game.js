@@ -64,6 +64,17 @@
       ],
       correct: '14',
     },
+    6: {
+      img: 'assets/quiz-leviatan.jpg',
+      alt: 'Siedziba Leviatan-Poligrafia',
+      question: 'Od kiedy działa Leviatan-Poligrafia?',
+      answers: [
+        { label: 'A) od 1990', v: '1990' },
+        { label: 'B) od 1989', v: '1989' },
+        { label: 'C) od 1999', v: '1999' },
+      ],
+      correct: '1989',
+    },
   };
   const LEVEL_BANNER_MS = 1500;
 
