@@ -83,6 +83,10 @@
   logoSprite.src = 'assets/logo.png?v=1';
   const LOGO_SPRITE_ASPECT = 300 / 167; // width / height of assets/logo.png
 
+  const coffeeSprite = new Image();
+  coffeeSprite.src = 'assets/powerup-coffee.png?v=1';
+  const COFFEE_SPRITE_ASPECT = 360 / 220; // width / height of assets/powerup-coffee.png
+
   // ---------------------------------------------------------------------
   // DOM
   // ---------------------------------------------------------------------
@@ -689,7 +693,7 @@
     }
   }
 
-  const POWERUP_ICON = { speed: '☕', range: '📎', bomb: '🧷' };
+  const POWERUP_ICON = { range: '📎', bomb: '🧷' };
 
   function drawClipTimeIcon(x, y) {
     const r = TILE * 0.24;
@@ -734,6 +738,14 @@
     }
     if (p.type === 'time') {
       drawClipTimeIcon(x, y);
+      return;
+    }
+    if (p.type === 'speed') {
+      if (coffeeSprite.complete && coffeeSprite.naturalWidth > 0) {
+        const h = TILE * 0.52;
+        const w = h * COFFEE_SPRITE_ASPECT;
+        ctx.drawImage(coffeeSprite, x - w / 2, y - h / 2, w, h);
+      }
       return;
     }
     ctx.font = `${TILE * 0.55}px sans-serif`;
