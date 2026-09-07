@@ -80,7 +80,7 @@
       alt: 'Hator Gold — zestaw do renowacji napisów na płytach kamiennych',
       question: 'Co również wchodzi w skład zestawu do renowacji napisów na płytach kamiennych Hator?',
       answers: [
-        { label: 'A) pumeks szlifierski', v: 'a' },
+        { label: 'A) kamień szlifierski', v: 'a' },
         { label: 'B) nóż mały 2034', v: 'b' },
         { label: 'C) taśma Nano Tape', v: 'c' },
       ],
