@@ -53,6 +53,17 @@
       ],
       correct: '250',
     },
+    5: {
+      img: 'assets/quiz-korektor.jpg',
+      alt: 'Korektor w taśmie FORM+ by Leviatan',
+      question: 'Ile metrów taśmy korekcyjnej ma nasz najnowszy korektor FORM+?',
+      answers: [
+        { label: 'A) 10 m', v: '10' },
+        { label: 'B) 12 m', v: '12' },
+        { label: 'C) 14 m', v: '14' },
+      ],
+      correct: '14',
+    },
   };
   const LEVEL_BANNER_MS = 1500;
 
