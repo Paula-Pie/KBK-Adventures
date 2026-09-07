@@ -36,7 +36,7 @@
       alt: 'Mydło w płynie d.rect Office',
       question: 'Jaki zapach zawiera to mydło?',
       answers: [
-        { label: 'A) owoc granatu', v: 'a' },
+        { label: 'A) Milk&Honey', v: 'a' },
         { label: 'B) pomegranate', v: 'b' },
         { label: 'C) papaja', v: 'c' },
       ],
