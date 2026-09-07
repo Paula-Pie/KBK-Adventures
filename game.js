@@ -52,6 +52,10 @@
   playerSprite.src = 'assets/player.png?v=3';
   const PLAYER_SPRITE_ASPECT = 328 / 380; // width / height of assets/player.png
 
+  const logoSprite = new Image();
+  logoSprite.src = 'assets/logo.png?v=1';
+  const LOGO_SPRITE_ASPECT = 300 / 167; // width / height of assets/logo.png
+
   // ---------------------------------------------------------------------
   // DOM
   // ---------------------------------------------------------------------
@@ -536,10 +540,11 @@
     hudLives.innerHTML = '';
     const slots = Math.max(START_LIVES, lives);
     for (let i = 0; i < slots; i++) {
-      const span = document.createElement('span');
-      span.className = 'life-icon' + (i < lives ? '' : ' lost');
-      span.textContent = '📎';
-      hudLives.appendChild(span);
+      const img = document.createElement('img');
+      img.className = 'life-icon' + (i < lives ? '' : ' lost');
+      img.src = 'assets/logo.png?v=1';
+      img.alt = '';
+      hudLives.appendChild(img);
     }
   }
 
@@ -651,9 +656,17 @@
     }
   }
 
-  const POWERUP_ICON = { speed: '☕', range: '📎', bomb: '🧷', time: '⏱️', life: '❤️' };
+  const POWERUP_ICON = { speed: '☕', range: '📎', bomb: '🧷', time: '⏱️' };
   function drawPowerup(p) {
     const x = p.c * TILE + TILE / 2, y = p.r * TILE + TILE / 2;
+    if (p.type === 'life') {
+      if (logoSprite.complete && logoSprite.naturalWidth > 0) {
+        const h = TILE * 0.5;
+        const w = h * LOGO_SPRITE_ASPECT;
+        ctx.drawImage(logoSprite, x - w / 2, y - h / 2, w, h);
+      }
+      return;
+    }
     ctx.font = `${TILE * 0.55}px sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
