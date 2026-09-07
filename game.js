@@ -69,7 +69,7 @@
       alt: 'Siedziba Leviatan-Poligrafia',
       question: 'Od kiedy działa Leviatan-Poligrafia?',
       answers: [
-        { label: 'A) od 1990', v: '1990' },
+        { label: 'A) od 1995', v: '1995' },
         { label: 'B) od 1989', v: '1989' },
         { label: 'C) od 1999', v: '1999' },
       ],
