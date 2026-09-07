@@ -547,7 +547,7 @@
     for (let i = 0; i < slots; i++) {
       const img = document.createElement('img');
       img.className = 'life-icon' + (i < lives ? '' : ' lost');
-      img.src = 'assets/logo.png?v=1';
+      img.src = 'assets/logo-white.png?v=1';
       img.alt = '';
       hudLives.appendChild(img);
     }
