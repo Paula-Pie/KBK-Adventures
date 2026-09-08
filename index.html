@@ -519,8 +519,8 @@
   #bomb-btn{
     width:90px; height:90px;
     border-radius:50%;
-    background:radial-gradient(circle at 35% 30%, #3a3a3a, #0e0e0e 70%);
-    border:3px solid var(--red);
+    background:radial-gradient(circle at 35% 30%, var(--red), var(--red-dark) 75%);
+    border:3px solid #fff;
     color:#fff;
     font-size:1.9rem;
     display:flex; align-items:center; justify-content:center;
@@ -623,8 +623,8 @@
         <span>␣ Spacja — spinacz-bomba</span>
       </div>
       <div class="controls-hint controls-hint-touch">
-        <span>👆 Joystick — ruch</span>
-        <span>📎 Przycisk — spinacz-bomba</span>
+        <span>🕹️ Joystick — ruch</span>
+        <span>💣 Przycisk — spinacz-bomba</span>
       </div>
 
       <div class="mini-board">
@@ -661,8 +661,9 @@
       <div id="tutorial-intro" hidden>
         <div class="intro-card">
           <h3>Jak grać?</h3>
-          <div class="intro-row"><span class="intro-icon">🎮</span><span>Poruszasz się strzałkami / WASD (albo joystickiem na ekranie dotykowym)</span></div>
-          <div class="intro-row"><span class="intro-icon">📎</span><span>Spacja / czerwony przycisk 📎 podkłada bombę-spinacz — wybucha po chwili</span></div>
+          <div class="intro-row"><span class="intro-icon">🕹️</span><span>Telefon: joystick po lewej porusza postacią, duży czerwony przycisk po prawej podkłada bombę</span></div>
+          <div class="intro-row"><span class="intro-icon">⌨️</span><span>Komputer: strzałki / WASD — ruch, spacja — bomba</span></div>
+          <div class="intro-row"><span class="intro-icon">💣</span><span>Bomba-spinacz wybucha po chwili i niszczy kartony w zasięgu</span></div>
           <div class="intro-row"><span class="intro-icon">📦</span><span>Wysadź karton, żeby zdobyć punkty — czasem wypadnie z niego bonus</span></div>
           <div class="intro-row"><span class="intro-icon">☕📎🧷⏱️</span><span>Bonusy: szybkość, większy zasięg bomby, dodatkowa bomba, +czasu</span></div>
           <div class="intro-row"><span class="intro-icon">❤️</span><span>Od poziomu 3 (i na 6, 8, 10) z kartonów może też wypaść dodatkowe życie</span></div>
@@ -690,12 +691,12 @@
       </div>
       <div id="bomb-zone" role="button" aria-label="Podłóż bombę">
         <div id="bomb-btn">
-          <svg viewBox="0 0 40 40" width="36" height="36" aria-hidden="true">
-            <circle cx="20" cy="24" r="13" fill="#1b1b1f"/>
-            <circle cx="15" cy="19" r="4.4" fill="#3a3a3a"/>
-            <ellipse cx="20.5" cy="9" rx="4" ry="8" fill="none" stroke="#E31E24" stroke-width="3"/>
-            <ellipse cx="20.5" cy="10" rx="2.1" ry="5" fill="none" stroke="#E31E24" stroke-width="3"/>
-            <circle cx="27" cy="4" r="2.3" fill="#FFB020"/>
+          <svg viewBox="0 0 40 40" width="58" height="58" aria-hidden="true">
+            <circle cx="20" cy="24" r="13.5" fill="#111114" stroke="#000" stroke-width="0.5"/>
+            <circle cx="15" cy="19" r="4.6" fill="#4a4a4f"/>
+            <ellipse cx="20.5" cy="9" rx="4" ry="8" fill="none" stroke="#fff" stroke-width="3"/>
+            <ellipse cx="20.5" cy="10" rx="2.1" ry="5" fill="none" stroke="#fff" stroke-width="3"/>
+            <circle cx="27" cy="4" r="2.6" fill="#FFD23F"/>
           </svg>
         </div>
       </div>
