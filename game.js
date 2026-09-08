@@ -109,7 +109,7 @@
     10: {
       img: 'assets/quiz-zszywacz.png?v=2',
       alt: 'Zszywacz Smart FORM+ 5106 by Leviatan',
-      question: 'Jaka technologia została użyta w naszym najnowszym zszywaczu FORM+5106?',
+      question: 'Jaka technologia została użyta w najnowszym zszywaczu FORM+5106?',
       answers: [
         { label: 'A) Zszywanie standardowe (stapling)', v: 'a' },
         { label: 'B) Zszywanie zamykane (closed clinch)', v: 'b' },
