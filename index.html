@@ -454,58 +454,77 @@
     pointer-events:none;
     z-index:6;
   }
-  /* On touch devices, give controls their own row instead of floating over the board
-     (keyboard/mouse users keep the compact overlay above, since they rarely need it). */
+  /* On touch devices, give controls their own tall row instead of floating over the board —
+     each half is one big drag/tap zone (keyboard/mouse users keep the compact overlay above,
+     since they rarely need it). */
   @media (hover: none) and (pointer: coarse){
     #touch-controls{
       position:static;
       flex-shrink:0;
-      padding:10px 10px max(10px, env(safe-area-inset-bottom));
+      align-items:stretch;
+      padding:6px 4px max(6px, env(safe-area-inset-bottom));
       background:linear-gradient(0deg, var(--cabinet-dark), rgba(54,61,75,.4));
     }
+    #joystick-zone, #bomb-zone{
+      flex:1;
+      min-height:132px;
+    }
   }
-  @media (hover: none) and (pointer: coarse) and (max-height: 420px){
-    #joystick-zone{ width:100px; height:100px; }
-    #joystick-base{ width:88px; height:88px; }
-    #joystick-knob{ width:38px; height:38px; }
-    #bomb-btn{ width:56px; height:56px; font-size:1.25rem; }
+  @media (hover: none) and (pointer: coarse) and (max-height: 480px){
+    #joystick-zone, #bomb-zone{ min-height:108px; }
+    #joystick-base{ width:92px; height:92px; }
+    #joystick-knob{ width:42px; height:42px; }
+    #bomb-btn{ width:60px; height:60px; font-size:1.3rem; }
   }
 
   #joystick-zone{
+    position:relative;
     pointer-events:auto;
     width:128px; height:128px;
-    display:flex; align-items:center; justify-content:center;
     touch-action:none;
   }
   #joystick-base{
+    position:absolute;
+    left:50%; top:50%;
     width:108px; height:108px;
+    margin-left:-54px; margin-top:-54px;
     border-radius:50%;
     background:rgba(20,20,24,.45);
     border:1px solid rgba(255,255,255,.25);
-    position:relative;
     display:flex; align-items:center; justify-content:center;
+    opacity:0;
+    transition:opacity .15s ease;
   }
+  #joystick-base.armed{opacity:1;}
+  #joystick-base.armed{background:rgba(227,30,36,.22); border-color:rgba(227,30,36,.5);}
   #joystick-knob{
     width:48px; height:48px;
     border-radius:50%;
-    background:rgba(255,255,255,.9);
+    background:rgba(255,255,255,.92);
     border:2px solid var(--red);
     box-shadow:0 2px 6px rgba(0,0,0,.5);
     will-change:transform;
   }
-  #joystick-zone.active #joystick-base{background:rgba(227,30,36,.25); border-color:rgba(227,30,36,.5);}
 
-  #bomb-btn{
+  #bomb-zone{
+    position:relative;
     pointer-events:auto;
+    width:110px; height:110px;
+    display:flex; align-items:center; justify-content:center;
+    touch-action:none;
+  }
+  #bomb-zone.pressed #bomb-btn{transform:scale(.9);}
+  #bomb-btn{
     width:72px; height:72px;
     border-radius:50%;
     background:radial-gradient(circle at 35% 30%, #3a3a3a, #0e0e0e 70%);
     border:3px solid var(--red);
     color:#fff;
     font-size:1.6rem;
+    display:flex; align-items:center; justify-content:center;
     box-shadow:0 8px 18px -6px rgba(0,0,0,.7);
+    transition:transform .08s ease;
   }
-  #bomb-btn:active{transform:scale(.92);}
 
   /* ---------- RESULTS ---------- */
   #screen-results{
@@ -667,7 +686,9 @@
           <div id="joystick-knob"></div>
         </div>
       </div>
-      <button id="bomb-btn" aria-label="Podłóż bombę">📎</button>
+      <div id="bomb-zone" role="button" aria-label="Podłóż bombę">
+        <div id="bomb-btn">📎</div>
+      </div>
     </div>
   </section>
 

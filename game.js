@@ -382,13 +382,16 @@
     if (KEY_MAP[e.code]) { keys[KEY_MAP[e.code]] = false; e.preventDefault(); }
   });
 
-  // Virtual joystick — one thumb drags anywhere in the zone, direction snaps to the
-  // nearest of the 4 cardinal directions (movement is grid-based, no diagonals).
+  // Virtual joystick — floating: the base appears wherever the thumb first touches down
+  // inside the (generously large) zone, so there's no small fixed target to aim for.
+  // Direction then snaps to the nearest of the 4 cardinal directions (grid movement, no diagonals).
   const joyZone = $('joystick-zone');
+  const joyBase = $('joystick-base');
   const joyKnob = $('joystick-knob');
-  if (joyZone && joyKnob) {
+  if (joyZone && joyBase && joyKnob) {
     let joyPointerId = null;
-    const maxKnobTravel = 34; // px the knob can visually move from center
+    let anchorX = 0, anchorY = 0;
+    const maxKnobTravel = 34; // px the knob can visually move from the anchor
     const deadZone = 10; // px of drag before a direction registers
 
     function clearJoyKeys() {
@@ -396,10 +399,7 @@
     }
 
     function updateJoystick(clientX, clientY) {
-      const rect = joyZone.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      const dx = clientX - cx, dy = clientY - cy;
+      const dx = clientX - anchorX, dy = clientY - anchorY;
       const dist = Math.hypot(dx, dy);
 
       const knobDist = Math.min(dist, maxKnobTravel);
@@ -419,7 +419,7 @@
 
     function resetJoystick() {
       joyPointerId = null;
-      joyZone.classList.remove('active');
+      joyBase.classList.remove('armed');
       joyKnob.style.transform = 'translate(0,0)';
       clearJoyKeys();
     }
@@ -427,9 +427,14 @@
     joyZone.addEventListener('pointerdown', (e) => {
       e.preventDefault();
       joyPointerId = e.pointerId;
-      joyZone.classList.add('active');
+      anchorX = e.clientX;
+      anchorY = e.clientY;
+      const zoneRect = joyZone.getBoundingClientRect();
+      joyBase.style.left = `${anchorX - zoneRect.left}px`;
+      joyBase.style.top = `${anchorY - zoneRect.top}px`;
+      joyBase.classList.add('armed');
+      joyKnob.style.transform = 'translate(0,0)';
       joyZone.setPointerCapture(e.pointerId);
-      updateJoystick(e.clientX, e.clientY);
     });
     joyZone.addEventListener('pointermove', (e) => {
       if (e.pointerId !== joyPointerId) return;
@@ -440,7 +445,18 @@
     joyZone.addEventListener('pointercancel', (e) => { if (e.pointerId === joyPointerId) resetJoystick(); });
   }
 
-  $('bomb-btn').addEventListener('pointerdown', (e) => { e.preventDefault(); if (running) placeBomb(); });
+  const bombZone = $('bomb-zone');
+  if (bombZone) {
+    bombZone.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      bombZone.classList.add('pressed');
+      if (running) placeBomb();
+    });
+    const releaseBomb = () => bombZone.classList.remove('pressed');
+    bombZone.addEventListener('pointerup', releaseBomb);
+    bombZone.addEventListener('pointerleave', releaseBomb);
+    bombZone.addEventListener('pointercancel', releaseBomb);
+  }
 
   // Hard-block iOS Safari's pull-to-refresh / rubber-band scroll while the game screen is up —
   // CSS overscroll-behavior alone doesn't always catch it. Scrollable overlay cards (tutorial
