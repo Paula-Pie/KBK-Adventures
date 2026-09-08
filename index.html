@@ -208,11 +208,6 @@
     justify-content:center;
     flex-wrap:wrap;
   }
-  .controls-hint-touch{display:none;}
-  @media (hover: none) and (pointer: coarse){
-    .controls-hint-kb{display:none;}
-    .controls-hint-touch{display:flex;}
-  }
 
   .mini-board{
     margin-top:10px;
@@ -618,13 +613,9 @@
       <button id="play-btn" class="btn btn-primary">▶ GRAJ</button>
       <button id="tutorial-btn" class="btn btn-ghost btn-small">🎓 Jak grać? (samouczek)</button>
 
-      <div class="controls-hint controls-hint-kb">
-        <span>⌨️ Strzałki / WASD — ruch</span>
-        <span>␣ Spacja — spinacz-bomba</span>
-      </div>
-      <div class="controls-hint controls-hint-touch">
-        <span>🕹️ Joystick — ruch</span>
-        <span>💣 Przycisk — spinacz-bomba</span>
+      <div class="controls-hint">
+        <span>🕹️ Joystick / ⌨️ strzałki — ruch</span>
+        <span>💣 Przycisk / ␣ spacja — bomba</span>
       </div>
 
       <div class="mini-board">
