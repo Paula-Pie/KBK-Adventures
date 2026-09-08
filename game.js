@@ -382,18 +382,64 @@
     if (KEY_MAP[e.code]) { keys[KEY_MAP[e.code]] = false; e.preventDefault(); }
   });
 
-  function bindHold(el, dir) {
-    const on = (e) => { keys[dir] = true; e.preventDefault(); };
-    const off = (e) => { keys[dir] = false; e.preventDefault(); };
-    el.addEventListener('pointerdown', on);
-    el.addEventListener('pointerup', off);
-    el.addEventListener('pointerleave', off);
-    el.addEventListener('pointercancel', off);
+  // Virtual joystick — one thumb drags anywhere in the zone, direction snaps to the
+  // nearest of the 4 cardinal directions (movement is grid-based, no diagonals).
+  const joyZone = $('joystick-zone');
+  const joyKnob = $('joystick-knob');
+  if (joyZone && joyKnob) {
+    let joyPointerId = null;
+    const maxKnobTravel = 34; // px the knob can visually move from center
+    const deadZone = 10; // px of drag before a direction registers
+
+    function clearJoyKeys() {
+      keys.up = keys.down = keys.left = keys.right = false;
+    }
+
+    function updateJoystick(clientX, clientY) {
+      const rect = joyZone.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = clientX - cx, dy = clientY - cy;
+      const dist = Math.hypot(dx, dy);
+
+      const knobDist = Math.min(dist, maxKnobTravel);
+      const angle = Math.atan2(dy, dx);
+      joyKnob.style.transform = dist > 0
+        ? `translate(${Math.cos(angle) * knobDist}px, ${Math.sin(angle) * knobDist}px)`
+        : 'translate(0,0)';
+
+      clearJoyKeys();
+      if (dist < deadZone) return;
+      const deg = angle * (180 / Math.PI);
+      if (deg > -45 && deg <= 45) keys.right = true;
+      else if (deg > 45 && deg <= 135) keys.down = true;
+      else if (deg > -135 && deg <= -45) keys.up = true;
+      else keys.left = true;
+    }
+
+    function resetJoystick() {
+      joyPointerId = null;
+      joyZone.classList.remove('active');
+      joyKnob.style.transform = 'translate(0,0)';
+      clearJoyKeys();
+    }
+
+    joyZone.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      joyPointerId = e.pointerId;
+      joyZone.classList.add('active');
+      joyZone.setPointerCapture(e.pointerId);
+      updateJoystick(e.clientX, e.clientY);
+    });
+    joyZone.addEventListener('pointermove', (e) => {
+      if (e.pointerId !== joyPointerId) return;
+      e.preventDefault();
+      updateJoystick(e.clientX, e.clientY);
+    });
+    joyZone.addEventListener('pointerup', (e) => { if (e.pointerId === joyPointerId) resetJoystick(); });
+    joyZone.addEventListener('pointercancel', (e) => { if (e.pointerId === joyPointerId) resetJoystick(); });
   }
-  bindHold($('dpad-up'), 'up');
-  bindHold($('dpad-down'), 'down');
-  bindHold($('dpad-left'), 'left');
-  bindHold($('dpad-right'), 'right');
+
   $('bomb-btn').addEventListener('pointerdown', (e) => { e.preventDefault(); if (running) placeBomb(); });
 
   // Hard-block iOS Safari's pull-to-refresh / rubber-band scroll while the game screen is up —

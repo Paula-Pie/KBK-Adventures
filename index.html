@@ -263,8 +263,8 @@
   }
   .hud-pill.timer.low{color:var(--flame); animation:pulse 1s infinite;}
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
-  .lives{display:flex; gap:3px; align-items:center;}
-  .life-icon{height:20px; width:auto; opacity:1; display:block; filter:drop-shadow(0 1px 2px rgba(0,0,0,.5));}
+  .lives{display:flex; gap:5px; align-items:center; min-height:28px;}
+  .life-icon{height:28px; width:auto; aspect-ratio:300/167; opacity:1; display:block; filter:drop-shadow(0 1px 2px rgba(0,0,0,.6));}
   .life-icon.lost{opacity:.25;}
 
   @media (min-width: 480px){
@@ -465,21 +465,35 @@
     }
   }
   @media (hover: none) and (pointer: coarse) and (max-height: 420px){
-    .dir-btn{ width:42px; height:42px; font-size:1.05rem; }
+    #joystick-zone{ width:100px; height:100px; }
+    #joystick-base{ width:88px; height:88px; }
+    #joystick-knob{ width:38px; height:38px; }
     #bomb-btn{ width:56px; height:56px; font-size:1.25rem; }
   }
-  .dir-btn{
+
+  #joystick-zone{
     pointer-events:auto;
-    width:52px; height:52px;
-    background:rgba(20,20,24,.55);
-    border:1px solid rgba(255,255,255,.25);
-    border-radius:50%;
-    color:#fff;
-    font-size:1.3rem;
+    width:128px; height:128px;
     display:flex; align-items:center; justify-content:center;
-    opacity:.9;
+    touch-action:none;
   }
-  .dir-btn:active{background:rgba(227,30,36,.7);}
+  #joystick-base{
+    width:108px; height:108px;
+    border-radius:50%;
+    background:rgba(20,20,24,.45);
+    border:1px solid rgba(255,255,255,.25);
+    position:relative;
+    display:flex; align-items:center; justify-content:center;
+  }
+  #joystick-knob{
+    width:48px; height:48px;
+    border-radius:50%;
+    background:rgba(255,255,255,.9);
+    border:2px solid var(--red);
+    box-shadow:0 2px 6px rgba(0,0,0,.5);
+    will-change:transform;
+  }
+  #joystick-zone.active #joystick-base{background:rgba(227,30,36,.25); border-color:rgba(227,30,36,.5);}
 
   #bomb-btn{
     pointer-events:auto;
@@ -588,7 +602,7 @@
         <span>␣ Spacja — spinacz-bomba</span>
       </div>
       <div class="controls-hint controls-hint-touch">
-        <span>👆 Strzałki na ekranie — ruch</span>
+        <span>👆 Joystick — ruch</span>
         <span>📎 Przycisk — spinacz-bomba</span>
       </div>
 
@@ -626,7 +640,7 @@
       <div id="tutorial-intro" hidden>
         <div class="intro-card">
           <h3>Jak grać?</h3>
-          <div class="intro-row"><span class="intro-icon">🎮</span><span>Poruszasz się strzałkami / WASD (albo strzałkami na ekranie dotykowym)</span></div>
+          <div class="intro-row"><span class="intro-icon">🎮</span><span>Poruszasz się strzałkami / WASD (albo joystickiem na ekranie dotykowym)</span></div>
           <div class="intro-row"><span class="intro-icon">📎</span><span>Spacja / czerwony przycisk 📎 podkłada bombę-spinacz — wybucha po chwili</span></div>
           <div class="intro-row"><span class="intro-icon">📦</span><span>Wysadź karton, żeby zdobyć punkty — czasem wypadnie z niego bonus</span></div>
           <div class="intro-row"><span class="intro-icon">☕📎🧷⏱️</span><span>Bonusy: szybkość, większy zasięg bomby, dodatkowa bomba, +czasu</span></div>
@@ -648,11 +662,12 @@
       </div>
     </div>
     <div id="touch-controls">
-      <button class="dir-btn" id="dpad-left" aria-label="W lewo">◀</button>
-      <button class="dir-btn" id="dpad-up" aria-label="W górę">▲</button>
+      <div id="joystick-zone" aria-hidden="true">
+        <div id="joystick-base">
+          <div id="joystick-knob"></div>
+        </div>
+      </div>
       <button id="bomb-btn" aria-label="Podłóż bombę">📎</button>
-      <button class="dir-btn" id="dpad-down" aria-label="W dół">▼</button>
-      <button class="dir-btn" id="dpad-right" aria-label="W prawo">▶</button>
     </div>
   </section>
 
