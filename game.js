@@ -186,8 +186,6 @@
   const levelBanner = $('level-banner');
   const levelBannerNum = $('level-banner-num');
   const levelBannerSub = $('level-banner-sub');
-  const tutorialHint = $('tutorial-hint');
-  const skipTutorialBtn = $('skip-tutorial-btn');
   const tutorialIntro = $('tutorial-intro');
   const introStartBtn = $('intro-start-btn');
   const quizScreen = $('quiz-screen');
@@ -338,7 +336,6 @@
   function startLevel(idx, prevPlayer) {
     levelIdx = idx;
     levelDef = idx === 0 ? TUTORIAL : LEVELS[idx - 1];
-    if (tutorialHint) tutorialHint.hidden = !levelDef.tutorial;
     COLS = levelDef.cols;
     ROWS = levelDef.rows;
     resizeCanvas();
@@ -1285,11 +1282,6 @@
     });
   }
 
-  if (skipTutorialBtn) {
-    skipTutorialBtn.addEventListener('click', () => {
-      if (running && levelDef.tutorial) levelClearPending = true;
-    });
-  }
 
   retryBtn.addEventListener('click', () => startRun(currentNick));
   menuBtn.addEventListener('click', () => showScreen(screenMenu));

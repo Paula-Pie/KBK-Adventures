@@ -273,30 +273,6 @@
     .life-icon{width:54px; height:30px;}
   }
 
-  #tutorial-hint{
-    flex-shrink:0;
-    display:flex; align-items:center; justify-content:space-between;
-    gap:10px;
-    background:rgba(15,12,10,.72);
-    color:#fff;
-    font-size:.74rem;
-    line-height:1.3;
-    padding:7px 12px;
-  }
-  #tutorial-hint[hidden]{display:none;}
-  #tutorial-hint span{flex:1;}
-  #skip-tutorial-btn{
-    flex-shrink:0;
-    background:rgba(255,255,255,.15);
-    border:1px solid rgba(255,255,255,.35);
-    color:#fff;
-    font-size:.72rem;
-    font-weight:700;
-    padding:5px 10px;
-    border-radius:8px;
-  }
-  #skip-tutorial-btn:active{background:rgba(227,30,36,.6);}
-
   #canvas-wrap{
     flex:1;
     min-height:0;
@@ -656,10 +632,6 @@
       <div class="hud-group">
         <div class="lives" id="hud-lives"></div>
       </div>
-    </div>
-    <div id="tutorial-hint" hidden>
-      <span>🎮 Strzałki/WASD = ruch&nbsp; •&nbsp; 📎 Spacja = bomba&nbsp; •&nbsp; 💥 zbij karton, odbierz bonus&nbsp; •&nbsp; 🎯 zbij wszystkie → dalej</span>
-      <button id="skip-tutorial-btn">Pomiń →</button>
     </div>
     <div id="canvas-wrap">
       <canvas id="game-canvas"></canvas>
