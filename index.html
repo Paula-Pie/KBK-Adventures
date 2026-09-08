@@ -240,16 +240,15 @@
   /* ---------- GAME ---------- */
   #screen-game{padding:0; justify-content:flex-start; background:var(--cabinet-dark);}
   #hud{
-    position:absolute; top:0; left:0; right:0;
+    flex-shrink:0;
     display:flex; flex-direction:column; align-items:center;
     gap:5px;
     padding:8px 10px;
     padding-top:max(8px, env(safe-area-inset-top));
-    background:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,0));
+    background:var(--cabinet-dark);
     color:#fff;
     z-index:5;
     font-family:'Baloo 2',sans-serif;
-    pointer-events:none;
   }
   .hud-group{display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap;}
   .hud-pill{
@@ -448,8 +447,8 @@
   #touch-controls{
     position:absolute;
     left:0; right:0; bottom:0;
-    display:flex; align-items:flex-end; justify-content:space-between;
-    padding:0 18px max(16px, env(safe-area-inset-bottom));
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 10px max(14px, env(safe-area-inset-bottom));
     pointer-events:none;
     z-index:6;
   }
@@ -459,57 +458,36 @@
     #touch-controls{
       position:static;
       flex-shrink:0;
-      padding:8px 18px max(8px, env(safe-area-inset-bottom));
+      padding:10px 10px max(10px, env(safe-area-inset-bottom));
       background:linear-gradient(0deg, var(--cabinet-dark), rgba(54,61,75,.4));
     }
-    .dpad{
-      grid-template-columns:44px 44px 44px;
-      grid-template-rows:44px 44px 44px;
-    }
-    #bomb-btn{ width:64px; height:64px; font-size:1.4rem; }
   }
   @media (hover: none) and (pointer: coarse) and (max-height: 420px){
-    .dpad{
-      grid-template-columns:38px 38px 38px;
-      grid-template-rows:38px 38px 38px;
-      gap:3px;
-    }
-    #bomb-btn{ width:54px; height:54px; font-size:1.2rem; }
+    .dir-btn{ width:42px; height:42px; font-size:1.05rem; }
+    #bomb-btn{ width:56px; height:56px; font-size:1.25rem; }
   }
-  .dpad{
-    display:grid;
-    grid-template-columns:52px 52px 52px;
-    grid-template-rows:52px 52px 52px;
-    gap:4px;
+  .dir-btn{
     pointer-events:auto;
-    opacity:.88;
-  }
-  .dpad button{
-    grid-area:auto;
+    width:52px; height:52px;
     background:rgba(20,20,24,.55);
     border:1px solid rgba(255,255,255,.25);
-    border-radius:12px;
+    border-radius:50%;
     color:#fff;
-    font-size:1.2rem;
+    font-size:1.3rem;
     display:flex; align-items:center; justify-content:center;
+    opacity:.9;
   }
-  .dpad button:active{background:rgba(227,30,36,.7);}
-  #dpad-up{grid-column:2; grid-row:1;}
-  #dpad-left{grid-column:1; grid-row:2;}
-  #dpad-right{grid-column:3; grid-row:2;}
-  #dpad-down{grid-column:2; grid-row:3;}
+  .dir-btn:active{background:rgba(227,30,36,.7);}
 
   #bomb-btn{
     pointer-events:auto;
-    width:76px; height:76px;
+    width:72px; height:72px;
     border-radius:50%;
     background:radial-gradient(circle at 35% 30%, #3a3a3a, #0e0e0e 70%);
     border:3px solid var(--red);
     color:#fff;
-    font-size:1.7rem;
+    font-size:1.6rem;
     box-shadow:0 8px 18px -6px rgba(0,0,0,.7);
-    align-self:flex-end;
-    margin-bottom:2px;
   }
   #bomb-btn:active{transform:scale(.92);}
 
@@ -668,13 +646,11 @@
       </div>
     </div>
     <div id="touch-controls">
-      <div class="dpad" aria-hidden="true">
-        <button id="dpad-up">▲</button>
-        <button id="dpad-left">◀</button>
-        <button id="dpad-right">▶</button>
-        <button id="dpad-down">▼</button>
-      </div>
+      <button class="dir-btn" id="dpad-left" aria-label="W lewo">◀</button>
+      <button class="dir-btn" id="dpad-up" aria-label="W górę">▲</button>
       <button id="bomb-btn" aria-label="Podłóż bombę">📎</button>
+      <button class="dir-btn" id="dpad-down" aria-label="W dół">▼</button>
+      <button class="dir-btn" id="dpad-right" aria-label="W prawo">▶</button>
     </div>
   </section>
 
