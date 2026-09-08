@@ -23,7 +23,7 @@
     2: {
       img: 'assets/quiz-record.jpg',
       alt: 'record by Leviatan',
-      question: 'Ile kolorów zawiera <strong>record</strong>?',
+      question: 'Ile kolorów zawiera <strong>RECORD</strong>?',
       answers: [
         { label: 'A) 5', v: '5' },
         { label: 'B) 6', v: '6' },
