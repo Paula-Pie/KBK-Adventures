@@ -86,15 +86,14 @@
       correct: 'tak',
     },
     8: {
-      img: 'assets/quiz-klej.jpg?v=2',
-      alt: 'Klej na gorąco brokatowy',
-      question: 'Po ile pakujemy nasz klej na gorąco brokatowy?',
+      img: 'assets/quiz-nanotape.jpg?v=1',
+      alt: 'Taśma Nano Tape',
+      question: 'Czy taśma Nano Tape jest odrywalna (można ją oderwać i przykleić wiele razy)?',
       answers: [
-        { label: 'A) 15', v: '15' },
-        { label: 'B) 60', v: '60' },
-        { label: 'C) 100', v: '100' },
+        { label: 'Tak', v: 'tak' },
+        { label: 'Nie', v: 'nie' },
       ],
-      correct: '60',
+      correct: 'tak',
     },
     9: {
       img: 'assets/quiz-kawa.jpg?v=2',
