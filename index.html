@@ -374,7 +374,8 @@
     border-top:1px dashed var(--line);
   }
   .intro-row:first-of-type{border-top:none;}
-  .intro-icon{flex-shrink:0; font-size:1.1rem; width:1.6em; text-align:center;}
+  .intro-icon{flex-shrink:0; font-size:1.1rem; width:1.6em; text-align:center; display:flex; align-items:center; justify-content:center;}
+  .intro-icon-img{width:22px; height:22px; object-fit:contain;}
   #intro-start-btn{
     margin-top:14px;
     position:sticky;
@@ -673,8 +674,11 @@
           <div class="intro-row"><span class="intro-icon">⌨️</span><span>Komputer: strzałki / WASD — ruch, spacja — bomba</span></div>
           <div class="intro-row"><span class="intro-icon">💣</span><span>Bomba-spinacz wybucha po chwili i niszczy kartony w zasięgu</span></div>
           <div class="intro-row"><span class="intro-icon">📦</span><span>Wysadź karton, żeby zdobyć punkty — czasem wypadnie z niego bonus</span></div>
-          <div class="intro-row"><span class="intro-icon">☕📎🧷⏱️</span><span>Bonusy: szybkość, większy zasięg bomby, dodatkowa bomba, +czasu</span></div>
-          <div class="intro-row"><span class="intro-icon">❤️</span><span>Od poziomu 3 (i na 6, 8, 10) z kartonów może też wypaść dodatkowe życie</span></div>
+          <div class="intro-row"><span class="intro-icon"><img class="intro-icon-img" src="assets/powerup-coffee.png?v=1" alt="" /></span><span>Bonus: kawa daje szybkość</span></div>
+          <div class="intro-row"><span class="intro-icon">📎</span><span>Bonus: większy zasięg bomby</span></div>
+          <div class="intro-row"><span class="intro-icon">🧷</span><span>Bonus: dodatkowa bomba</span></div>
+          <div class="intro-row"><span class="intro-icon"><img class="intro-icon-img" src="assets/powerup-time.png?v=1" alt="" /></span><span>Bonus: +5 sekund do zegara</span></div>
+          <div class="intro-row"><span class="intro-icon"><img class="intro-icon-img" src="assets/logo.png?v=1" alt="" /></span><span>Od poziomu 3 (i na 6, 8, 10) z kartonów może też wypaść dodatkowe życie</span></div>
           <div class="intro-row"><span class="intro-icon">⚠️</span><span>Uważaj na biurowych przeciwników — dotyk kosztuje życie (ale możesz ich wysadzić bombą za punkty!)</span></div>
           <div class="intro-row"><span class="intro-icon">🎯</span><span>Cel: zbij wszystkie kartony na planszy, żeby przejść na kolejny poziom</span></div>
           <button id="intro-start-btn" class="btn btn-primary">Zaczynamy! →</button>
