@@ -79,7 +79,7 @@
     background-color:#0d0b09;
     background-image:
       linear-gradient(180deg, rgba(10,8,6,.06) 0%, rgba(10,8,6,.12) 55%, rgba(10,8,6,.82) 92%),
-      url('assets/cover.jpg?v=2');
+      url('assets/cover.jpg?v=3');
     background-repeat:no-repeat;
     background-position:center top, center top;
     background-size:100% 100%, auto 100%;
@@ -88,11 +88,15 @@
   }
   .menu-card{
     width:min(420px, 92vw);
+    max-height:min(58dvh, 58vh);
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
     background:var(--card-bg);
     backdrop-filter:blur(6px);
     border-radius:22px 22px 0 0;
     box-shadow:var(--shadow);
-    padding:14px 22px 16px;
+    padding:14px 22px calc(16px + env(safe-area-inset-bottom));
     text-align:center;
     border:1px solid var(--line);
     border-bottom:none;
@@ -332,30 +336,37 @@
   #tutorial-intro[hidden]{display:none;}
   .intro-card{
     width:min(420px, 100%);
-    max-height:92%;
+    max-height:min(94%, 94dvh);
     overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
     background:var(--card-bg);
     border-radius:20px;
     box-shadow:var(--shadow);
-    padding:20px 22px;
+    padding:16px 20px calc(16px + env(safe-area-inset-bottom));
     color:var(--ink);
   }
   .intro-card h3{
-    margin:0 0 12px;
-    font-size:1.3rem;
+    margin:0 0 8px;
+    font-size:1.2rem;
     color:var(--red);
     text-align:center;
   }
   .intro-row{
     display:flex; align-items:flex-start; gap:10px;
-    font-size:.86rem;
-    line-height:1.35;
-    padding:6px 0;
+    font-size:.84rem;
+    line-height:1.3;
+    padding:5px 0;
     border-top:1px dashed var(--line);
   }
   .intro-row:first-of-type{border-top:none;}
   .intro-icon{flex-shrink:0; font-size:1.1rem; width:1.6em; text-align:center;}
-  #intro-start-btn{margin-top:14px;}
+  #intro-start-btn{
+    margin-top:14px;
+    position:sticky;
+    bottom:0;
+    background:linear-gradient(180deg, var(--red), var(--red-dark));
+  }
 
   #quiz-screen{
     position:absolute; inset:0;
@@ -406,7 +417,12 @@
     font-size:.9rem;
     margin:12px 0 0;
   }
-  #quiz-continue-btn{margin-top:12px;}
+  #quiz-continue-btn{
+    margin-top:12px;
+    position:sticky;
+    bottom:0;
+    background:linear-gradient(180deg, var(--red), var(--red-dark));
+  }
 
   #touch-controls{
     position:absolute;

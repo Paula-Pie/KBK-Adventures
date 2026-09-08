@@ -21,7 +21,7 @@
   // clearing the previous one). Each answer's `v` is compared against `correct` to grade it.
   const QUIZZES = {
     2: {
-      img: 'assets/quiz-record.jpg',
+      img: 'assets/quiz-record.jpg?v=2',
       alt: 'record by Leviatan',
       question: 'Ile kolorów zawiera <strong>RECORD</strong>?',
       answers: [
@@ -32,7 +32,7 @@
       correct: '6',
     },
     3: {
-      img: 'assets/quiz-soap.jpg',
+      img: 'assets/quiz-soap.jpg?v=2',
       alt: 'Mydło w płynie d.rect Office',
       question: 'Jaki zapach zawiera to mydło?',
       answers: [
@@ -43,7 +43,7 @@
       correct: 'b',
     },
     4: {
-      img: 'assets/quiz-screencleaner.jpg',
+      img: 'assets/quiz-screencleaner.jpg?v=2',
       alt: 'TFT/LCD Screen Cleaner d.rect Office',
       question: 'Ile ml ma nasz płyn TFT/LCD do czyszczenia ekranów?',
       answers: [
@@ -54,7 +54,7 @@
       correct: '250',
     },
     5: {
-      img: 'assets/quiz-korektor.jpg',
+      img: 'assets/quiz-korektor.jpg?v=2',
       alt: 'Korektor w taśmie FORM+ by Leviatan',
       question: 'Ile metrów taśmy korekcyjnej ma nasz najnowszy korektor FORM+?',
       answers: [
@@ -65,7 +65,7 @@
       correct: '14',
     },
     6: {
-      img: 'assets/quiz-leviatan.jpg',
+      img: 'assets/quiz-leviatan.jpg?v=2',
       alt: 'Siedziba Leviatan-Poligrafia',
       question: 'Od kiedy działa Leviatan-Poligrafia?',
       answers: [
@@ -76,7 +76,7 @@
       correct: '1989',
     },
     7: {
-      img: 'assets/quiz-hator.png',
+      img: 'assets/quiz-hator.png?v=2',
       alt: 'Hator Gold — zestaw do renowacji napisów na płytach kamiennych',
       question: 'Co również wchodzi w skład zestawu do renowacji napisów na płytach kamiennych Hator?',
       answers: [
@@ -87,7 +87,7 @@
       correct: 'a',
     },
     8: {
-      img: 'assets/quiz-klej.png',
+      img: 'assets/quiz-klej.jpg?v=2',
       alt: 'Klej na gorąco brokatowy',
       question: 'Po ile pakujemy nasz klej na gorąco brokatowy?',
       answers: [
@@ -98,7 +98,7 @@
       correct: '60',
     },
     9: {
-      img: 'assets/quiz-kawa.jpg',
+      img: 'assets/quiz-kawa.jpg?v=2',
       alt: 'Kawa Life Up',
       question: 'Ile mamy rodzajów kawy?',
       answers: [
@@ -109,7 +109,7 @@
       correct: '4',
     },
     10: {
-      img: 'assets/quiz-zszywacz.png',
+      img: 'assets/quiz-zszywacz.png?v=2',
       alt: 'Zszywacz Smart FORM+ 5106 by Leviatan',
       question: 'Jaka technologia została użyta w naszym najnowszym zszywaczu FORM+5106?',
       answers: [
@@ -397,9 +397,12 @@
   $('bomb-btn').addEventListener('pointerdown', (e) => { e.preventDefault(); if (running) placeBomb(); });
 
   // Hard-block iOS Safari's pull-to-refresh / rubber-band scroll while the game screen is up —
-  // CSS overscroll-behavior alone doesn't always catch it.
+  // CSS overscroll-behavior alone doesn't always catch it. Scrollable overlay cards (tutorial
+  // briefing, quiz) are left alone so their own content can still scroll on short screens.
   document.addEventListener('touchmove', (e) => {
-    if (!screenGame.hidden) e.preventDefault();
+    if (screenGame.hidden) return;
+    if (e.target.closest('.intro-card, .quiz-card')) return;
+    e.preventDefault();
   }, { passive: false });
 
   // ---------------------------------------------------------------------
