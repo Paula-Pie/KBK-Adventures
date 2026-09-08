@@ -467,27 +467,27 @@
     }
     #joystick-zone, #bomb-zone{
       flex:1;
-      min-height:132px;
+      min-height:150px;
     }
   }
   @media (hover: none) and (pointer: coarse) and (max-height: 480px){
-    #joystick-zone, #bomb-zone{ min-height:108px; }
-    #joystick-base{ width:92px; height:92px; }
-    #joystick-knob{ width:42px; height:42px; }
-    #bomb-btn{ width:60px; height:60px; font-size:1.3rem; }
+    #joystick-zone, #bomb-zone{ min-height:124px; }
+    #joystick-base{ width:110px; height:110px; margin-left:-55px; margin-top:-55px; }
+    #joystick-knob{ width:52px; height:52px; }
+    #bomb-btn{ width:76px; height:76px; font-size:1.5rem; }
   }
 
   #joystick-zone{
     position:relative;
     pointer-events:auto;
-    width:128px; height:128px;
+    width:148px; height:148px;
     touch-action:none;
   }
   #joystick-base{
     position:absolute;
     left:50%; top:50%;
-    width:108px; height:108px;
-    margin-left:-54px; margin-top:-54px;
+    width:132px; height:132px;
+    margin-left:-66px; margin-top:-66px;
     border-radius:50%;
     background:rgba(20,20,24,.45);
     border:1px solid rgba(255,255,255,.25);
@@ -498,7 +498,7 @@
   #joystick-base.armed{opacity:1;}
   #joystick-base.armed{background:rgba(227,30,36,.22); border-color:rgba(227,30,36,.5);}
   #joystick-knob{
-    width:48px; height:48px;
+    width:60px; height:60px;
     border-radius:50%;
     background:rgba(255,255,255,.92);
     border:2px solid var(--red);
@@ -509,18 +509,18 @@
   #bomb-zone{
     position:relative;
     pointer-events:auto;
-    width:110px; height:110px;
+    width:130px; height:130px;
     display:flex; align-items:center; justify-content:center;
     touch-action:none;
   }
   #bomb-zone.pressed #bomb-btn{transform:scale(.9);}
   #bomb-btn{
-    width:72px; height:72px;
+    width:90px; height:90px;
     border-radius:50%;
     background:radial-gradient(circle at 35% 30%, #3a3a3a, #0e0e0e 70%);
     border:3px solid var(--red);
     color:#fff;
-    font-size:1.6rem;
+    font-size:1.9rem;
     display:flex; align-items:center; justify-content:center;
     box-shadow:0 8px 18px -6px rgba(0,0,0,.7);
     transition:transform .08s ease;

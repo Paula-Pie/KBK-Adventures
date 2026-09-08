@@ -391,7 +391,7 @@
   if (joyZone && joyBase && joyKnob) {
     let joyPointerId = null;
     let anchorX = 0, anchorY = 0;
-    const maxKnobTravel = 34; // px the knob can visually move from the anchor
+    const maxKnobTravel = 42; // px the knob can visually move from the anchor
     const deadZone = 10; // px of drag before a direction registers
 
     function clearJoyKeys() {
