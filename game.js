@@ -34,10 +34,10 @@
     3: {
       img: 'assets/quiz-soap.jpg?v=2',
       alt: 'Mydło w płynie d.rect Office',
-      question: 'Jaki zapach zawiera to mydło?',
+      question: 'Jaki jest zapach różowego mydła d.rect?',
       answers: [
         { label: 'A) milk&honey', v: 'a' },
-        { label: 'B) pomegranate', v: 'b' },
+        { label: 'B) pomegranate (owoc granatu)', v: 'b' },
         { label: 'C) papaja', v: 'c' },
       ],
       correct: 'b',
