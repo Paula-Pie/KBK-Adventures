@@ -56,7 +56,7 @@
     5: {
       img: 'assets/quiz-korektor.jpg?v=2',
       alt: 'Korektor w taśmie FORM+ by Leviatan',
-      question: 'Ile metrów taśmy korekcyjnej ma nasz najnowszy korektor FORM+?',
+      question: 'Ile metrów taśmy korekcyjnej ma korektor SMART FORM+ 5501?',
       answers: [
         { label: 'A) 10 m', v: '10' },
         { label: 'B) 12 m', v: '12' },
