@@ -197,6 +197,7 @@
   const quizImg = $('quiz-img');
   const quizQuestion = $('quiz-question');
   const quizAnswersWrap = $('quiz-answers');
+  const quizPoints = $('quiz-points');
   const quizFeedback = $('quiz-feedback');
   const quizContinueBtn = $('quiz-continue-btn');
   const retryBtn = $('retry-btn');
@@ -1125,7 +1126,9 @@
     quizImg.src = quiz.img;
     quizImg.alt = quiz.alt || '';
     quizQuestion.innerHTML = quiz.question;
+    if (quizPoints) quizPoints.textContent = `za poprawną odpowiedź: +${QUIZ_BONUS} pkt`;
     quizFeedback.textContent = '';
+    quizFeedback.className = 'quiz-feedback';
     quizContinueBtn.hidden = true;
 
     quizAnswersWrap.innerHTML = '';
@@ -1153,10 +1156,12 @@
     });
     if (isCorrect) {
       addScore(QUIZ_BONUS);
-      quizFeedback.textContent = `Dobrze! +${QUIZ_BONUS} pkt`;
+      quizFeedback.textContent = `✅ Dobrze! +${QUIZ_BONUS} pkt`;
+      quizFeedback.className = 'quiz-feedback show correct';
     } else {
       const correctLabel = buttons.find((b) => b.dataset.value === quizCorrectValue)?.textContent || '';
-      quizFeedback.textContent = `Niestety nie — poprawna odpowiedź to ${correctLabel}.`;
+      quizFeedback.textContent = `❌ Źle — poprawna odpowiedź: ${correctLabel} (+0 pkt)`;
+      quizFeedback.className = 'quiz-feedback show wrong';
     }
     quizContinueBtn.hidden = false;
   }
