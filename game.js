@@ -67,7 +67,7 @@
     6: {
       img: 'assets/quiz-leviatan.jpg?v=2',
       alt: 'Siedziba Leviatan-Poligrafia',
-      question: 'Od kiedy działa Leviatan-Poligrafia?',
+      question: 'W którym roku powstała firma Leviatan-Poligrafia?',
       answers: [
         { label: 'A) od 1995', v: '1995' },
         { label: 'B) od 1989', v: '1989' },
