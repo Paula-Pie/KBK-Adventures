@@ -23,13 +23,12 @@
     2: {
       img: 'assets/quiz-record.jpg?v=2',
       alt: 'record by Leviatan',
-      question: 'Ile kolorów zawiera <strong>RECORD</strong>?',
+      question: 'Czy długopis RECORD ma tusz dokumentalny niemieckiego producenta DOCUMENTAL?',
       answers: [
-        { label: 'A) 5', v: '5' },
-        { label: 'B) 6', v: '6' },
-        { label: 'C) 8', v: '8' },
+        { label: 'Tak', v: 'tak' },
+        { label: 'Nie', v: 'nie' },
       ],
-      correct: '6',
+      correct: 'tak',
     },
     3: {
       img: 'assets/quiz-soap.jpg?v=2',
