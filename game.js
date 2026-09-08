@@ -98,13 +98,13 @@
     9: {
       img: 'assets/quiz-kawa.jpg?v=2',
       alt: 'Kawa Life Up',
-      question: 'Ile mamy rodzajów kawy?',
+      question: 'Kawa w ofercie Leviatan to:',
       answers: [
-        { label: 'A) 2', v: '2' },
-        { label: 'B) 3', v: '3' },
-        { label: 'C) 4', v: '4' },
+        { label: 'A) Milano, Amsterdam...', v: 'a' },
+        { label: 'B) Czechy, Argentyna, Monaco...', v: 'b' },
+        { label: 'C) Toskania, Morawy...', v: 'c' },
       ],
-      correct: '4',
+      correct: 'a',
     },
     10: {
       img: 'assets/quiz-zszywacz.png?v=2',
