@@ -465,6 +465,13 @@
     e.preventDefault();
   }, { passive: false });
 
+  // Block iOS Safari pinch-to-zoom outright — it fires these non-standard gesture events
+  // regardless of touch-action/viewport-meta settings, and multi-touch taps can trigger it
+  // accidentally during play.
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach((evt) => {
+    document.addEventListener(evt, (e) => e.preventDefault());
+  });
+
   // ---------------------------------------------------------------------
   // Bombs / explosions
   // ---------------------------------------------------------------------
