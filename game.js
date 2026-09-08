@@ -157,8 +157,8 @@
   const PLAYER_SPRITE_ASPECT = 328 / 380; // width / height of assets/player.png
 
   const logoSprite = new Image();
-  logoSprite.src = 'assets/logo.png?v=1';
-  const LOGO_SPRITE_ASPECT = 300 / 167; // width / height of assets/logo.png
+  logoSprite.src = 'assets/logo-white.png?v=1';
+  const LOGO_SPRITE_ASPECT = 300 / 167; // width / height of assets/logo.png (same crop as logo-white.png)
 
   const coffeeSprite = new Image();
   coffeeSprite.src = 'assets/powerup-coffee.png?v=1';
@@ -853,7 +853,7 @@
     ctx.ellipse(x, y + r * 0.8, r * 0.75, r * 0.22, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = 'rgba(255,255,255,.95)';
+    ctx.fillStyle = 'rgba(12,12,14,.94)';
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.fill();
