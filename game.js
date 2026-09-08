@@ -1004,10 +1004,13 @@
     levelBanner.hidden = true;
     score = 0;
     lives = START_LIVES;
-    const skipTutorial = !forceTutorial && localStorage.getItem('kbk-tutorial-done') === '1';
-    startLevel(skipTutorial ? 1 : 0, null);
+    // Populate the HUD (lives row included) BEFORE startLevel() measures the available
+    // canvas size — otherwise the board gets sized against a shorter, lives-less HUD and
+    // ends up too tall once the lives icons appear, overlapping/hiding them.
     renderLives();
     hudScore.textContent = `✨ ${score}`;
+    const skipTutorial = !forceTutorial && localStorage.getItem('kbk-tutorial-done') === '1';
+    startLevel(skipTutorial ? 1 : 0, null);
     hudTimer.textContent = `⏱ ${Math.ceil(timeLeft)}`;
     hudLevel.textContent = levelDef.tutorial ? '🎓 Samouczek' : `🏢 ${levelIdx}/${LEVELS.length}`;
     render();
