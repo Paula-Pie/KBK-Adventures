@@ -846,11 +846,28 @@
 
   const POWERUP_ICON = { range: '📎', bomb: '🧷' };
 
+  function drawPowerupBadge(x, y) {
+    const r = TILE * 0.42;
+    ctx.fillStyle = 'rgba(0,0,0,.2)';
+    ctx.beginPath();
+    ctx.ellipse(x, y + r * 0.8, r * 0.75, r * 0.22, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = 'rgba(255,255,255,.95)';
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.lineWidth = Math.max(2.5, TILE * 0.06);
+    ctx.strokeStyle = '#FFB020';
+    ctx.stroke();
+  }
+
   function drawPowerup(p) {
     const x = p.c * TILE + TILE / 2, y = p.r * TILE + TILE / 2;
+    drawPowerupBadge(x, y);
     if (p.type === 'life') {
       if (logoSprite.complete && logoSprite.naturalWidth > 0) {
-        const h = TILE * 0.5;
+        const h = TILE * 0.42;
         const w = h * LOGO_SPRITE_ASPECT;
         ctx.drawImage(logoSprite, x - w / 2, y - h / 2, w, h);
       }
@@ -858,7 +875,7 @@
     }
     if (p.type === 'time') {
       if (timeSprite.complete && timeSprite.naturalWidth > 0) {
-        const h = TILE * 0.62;
+        const h = TILE * 0.5;
         const w = h * TIME_SPRITE_ASPECT;
         ctx.drawImage(timeSprite, x - w / 2, y - h / 2, w, h);
       }
@@ -866,13 +883,13 @@
     }
     if (p.type === 'speed') {
       if (coffeeSprite.complete && coffeeSprite.naturalWidth > 0) {
-        const h = TILE * 0.52;
+        const h = TILE * 0.44;
         const w = h * COFFEE_SPRITE_ASPECT;
         ctx.drawImage(coffeeSprite, x - w / 2, y - h / 2, w, h);
       }
       return;
     }
-    ctx.font = `${TILE * 0.55}px sans-serif`;
+    ctx.font = `${TILE * 0.46}px sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(POWERUP_ICON[p.type] || '★', x, y + 1);
