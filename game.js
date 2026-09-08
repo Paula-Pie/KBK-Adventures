@@ -78,13 +78,12 @@
     7: {
       img: 'assets/quiz-hator.png?v=2',
       alt: 'Hator Gold — zestaw do renowacji napisów na płytach kamiennych',
-      question: 'Co również wchodzi w skład zestawu do renowacji napisów na płytach kamiennych Hator?',
+      question: 'Czy w skład zestawu do renowacji napisów na nagrobkach wchodzi m.in. kamień szlifierski?',
       answers: [
-        { label: 'A) kamień szlifierski', v: 'a' },
-        { label: 'B) nóż mały 2034', v: 'b' },
-        { label: 'C) taśma Nano Tape', v: 'c' },
+        { label: 'Tak', v: 'tak' },
+        { label: 'Nie', v: 'nie' },
       ],
-      correct: 'a',
+      correct: 'tak',
     },
     8: {
       img: 'assets/quiz-klej.jpg?v=2',
