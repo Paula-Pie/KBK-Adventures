@@ -4,8 +4,8 @@
   // ---------------------------------------------------------------------
   // Config
   // ---------------------------------------------------------------------
-  const START_LIVES = 3;
-  const MAX_LIVES = 5;
+  const START_LIVES = 5;
+  const MAX_LIVES = 7;
   const LIFE_LEVELS = [3, 6, 8, 10]; // levels where the ❤️ extra-life powerup can drop
   const BOMB_FUSE = 1800; // ms
   const EXPLOSION_LIFE = 380; // ms
