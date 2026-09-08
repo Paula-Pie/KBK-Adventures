@@ -132,9 +132,9 @@
   };
 
   const LEVELS = [
-    { cols: 9, rows: 13, crateProb: 0.50, enemyMax: 2, enemySpeedMult: 1.00, time: 55, lane: false, floorA: '#E7DFCC', floorB: '#DED4BC', wall: '#3B4252', name: 'Recepcja' },
-    { cols: 9, rows: 13, crateProb: 0.55, enemyMax: 2, enemySpeedMult: 1.05, time: 55, lane: false, floorA: '#DCEFE3', floorB: '#CBE3D3', wall: '#2F5548', name: 'Open Space' },
-    { cols: 9, rows: 15, crateProb: 0.55, enemyMax: 3, enemySpeedMult: 1.10, time: 60, lane: true, floorA: '#E3E7F5', floorB: '#D0D8EF', wall: '#39415E', name: 'Sala Konferencyjna' },
+    { cols: 7, rows: 11, crateProb: 0.50, enemyMax: 2, enemySpeedMult: 1.00, time: 50, lane: false, floorA: '#E7DFCC', floorB: '#DED4BC', wall: '#3B4252', name: 'Recepcja' },
+    { cols: 7, rows: 11, crateProb: 0.55, enemyMax: 2, enemySpeedMult: 1.05, time: 50, lane: false, floorA: '#DCEFE3', floorB: '#CBE3D3', wall: '#2F5548', name: 'Open Space' },
+    { cols: 7, rows: 13, crateProb: 0.55, enemyMax: 3, enemySpeedMult: 1.10, time: 55, lane: true, floorA: '#E3E7F5', floorB: '#D0D8EF', wall: '#39415E', name: 'Sala Konferencyjna' },
     { cols: 11, rows: 15, crateProb: 0.58, enemyMax: 3, enemySpeedMult: 1.15, time: 65, lane: false, floorA: '#F2E7D0', floorB: '#E7D4A8', wall: '#5A4326', name: 'Archiwum' },
     { cols: 11, rows: 15, crateProb: 0.60, enemyMax: 3, enemySpeedMult: 1.20, time: 65, lane: true, floorA: '#DFE9F7', floorB: '#C4D9F0', wall: '#2E4766', name: 'Serwerownia' },
     { cols: 11, rows: 17, crateProb: 0.62, enemyMax: 4, enemySpeedMult: 1.25, time: 70, lane: false, floorA: '#F5E0E0', floorB: '#EFC4C4', wall: '#5A2E2E', name: 'Dział Marketingu' },
