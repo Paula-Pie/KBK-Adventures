@@ -1232,7 +1232,7 @@
 
       if (miniEl) {
         miniEl.innerHTML = '';
-        const top = list.slice(0, 5);
+        const top = list.slice(0, 3);
         if (!top.length) {
           miniEl.innerHTML = '<div class="mini-row"><span class="mini-nick" style="opacity:.5">Nikt jeszcze nie grał — może Ty?</span></div>';
         }
