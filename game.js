@@ -68,9 +68,9 @@
       alt: 'Siedziba Leviatan-Poligrafia',
       question: 'W którym roku powstała firma Leviatan-Poligrafia?',
       answers: [
-        { label: 'A) od 1995', v: '1995' },
-        { label: 'B) od 1989', v: '1989' },
-        { label: 'C) od 1999', v: '1999' },
+        { label: 'A) w 1995', v: '1995' },
+        { label: 'B) w 1989', v: '1989' },
+        { label: 'C) w 1999', v: '1999' },
       ],
       correct: '1989',
     },
