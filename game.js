@@ -315,11 +315,18 @@
     return pool[pool.length - 1];
   }
 
+  const ENEMY_SAFE_SPAWN_TILES = 2.5; // minimum distance from the player a new enemy may spawn
+
   function spawnEnemy() {
     const corners = [
       [COLS - 2, 1], [1, ROWS - 2], [COLS - 2, ROWS - 2],
     ];
-    const spot = corners[Math.floor(Math.random() * corners.length)];
+    const safeCorners = player
+      ? corners.filter(([c, r]) => Math.hypot(c * TILE - player.x, r * TILE - player.y) > TILE * ENEMY_SAFE_SPAWN_TILES)
+      : corners;
+    if (safeCorners.length === 0) return false; // player is camping every spawn point — try again later
+
+    const spot = safeCorners[Math.floor(Math.random() * safeCorners.length)];
     const kind = levelDef.tutorial ? ENEMY_KINDS[0] : pickEnemyKind();
     enemies.push({
       x: spot[0] * TILE, y: spot[1] * TILE,
@@ -331,6 +338,7 @@
       kind: kind.id,
       scoreValue: kind.score,
     });
+    return true;
   }
 
   function startLevel(idx, prevPlayer) {
@@ -624,8 +632,8 @@
     }
     enemies = enemies.filter((en) => en.alive);
     if (enemies.length < levelDef.enemyMax && now > nextEnemySpawnAt) {
-      spawnEnemy();
-      nextEnemySpawnAt = now + ENEMY_RESPAWN_MS;
+      const spawned = spawnEnemy();
+      nextEnemySpawnAt = now + (spawned ? ENEMY_RESPAWN_MS : 400);
     }
   }
 
