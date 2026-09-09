@@ -736,7 +736,10 @@
   function handleLevelClear() {
     running = false;
     const wasTutorial = levelDef.tutorial;
-    if (wasTutorial) localStorage.setItem('kbk-tutorial-done', '1');
+    if (wasTutorial) {
+      localStorage.setItem('kbk-tutorial-done', '1');
+      lives = START_LIVES; // any damage taken during the tutorial never carries into the real game
+    }
 
     const bonus = LEVEL_CLEAR_BASE + Math.round(timeLeft) * 2;
     addScore(bonus);
