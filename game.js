@@ -909,7 +909,7 @@
     ctx.fill();
 
     if (playerSprite.complete && playerSprite.naturalWidth > 0) {
-      const h = TILE * 1.24;
+      const h = TILE * 1.4;
       const w = h * PLAYER_SPRITE_ASPECT;
       const squash = player.moving ? 1 - Math.abs(Math.sin(now / 90)) * 0.05 : 1;
       ctx.drawImage(playerSprite, -w / 2, -h * 0.58 * squash, w, h * squash);
@@ -1018,6 +1018,7 @@
     ctx.ellipse(0, TILE * 0.32, TILE * 0.24, TILE * 0.07, 0, 0, Math.PI * 2);
     ctx.fill();
 
+    ctx.scale(1.14, 1.14); // slightly bigger bodies — easier to see and to judge collisions against
     switch (en.kind) {
       case 'printer': drawPrinter(now); break;
       case 'mug': drawMug(now); break;
