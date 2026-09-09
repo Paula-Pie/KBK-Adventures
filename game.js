@@ -844,37 +844,25 @@
 
   const POWERUP_ICON = { range: '📎', bomb: '🧷', speed: '☕', time: '⏰' };
 
-  function drawPowerupBadge(x, y) {
-    const r = TILE * 0.48;
-    ctx.fillStyle = 'rgba(0,0,0,.2)';
-    ctx.beginPath();
-    ctx.ellipse(x, y + r * 0.8, r * 0.75, r * 0.22, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = 'rgba(12,12,14,.94)';
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.lineWidth = Math.max(2.5, TILE * 0.065);
-    ctx.strokeStyle = '#FFB020';
-    ctx.stroke();
-  }
-
   function drawPowerup(p) {
     const x = p.c * TILE + TILE / 2, y = p.r * TILE + TILE / 2;
-    drawPowerupBadge(x, y);
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,.5)';
+    ctx.shadowBlur = TILE * 0.12;
     if (p.type === 'life') {
       if (logoSprite.complete && logoSprite.naturalWidth > 0) {
-        const h = TILE * 0.52;
+        const h = TILE * 0.56;
         const w = h * LOGO_SPRITE_ASPECT;
         ctx.drawImage(logoSprite, x - w / 2, y - h / 2, w, h);
       }
+      ctx.restore();
       return;
     }
-    ctx.font = `${TILE * 0.56}px sans-serif`;
+    ctx.font = `${TILE * 0.6}px sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(POWERUP_ICON[p.type] || '★', x, y + 1);
+    ctx.restore();
   }
 
   function drawPlayer(now) {
