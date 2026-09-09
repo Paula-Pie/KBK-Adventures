@@ -419,6 +419,8 @@
       keys.up = keys.down = keys.left = keys.right = false;
     }
 
+    let lastJoyDir = null;
+
     function updateJoystick(clientX, clientY) {
       const dx = clientX - centerX, dy = clientY - centerY;
       const dist = Math.hypot(dx, dy);
@@ -430,16 +432,26 @@
         : 'translate(0,0)';
 
       clearJoyKeys();
-      if (dist < deadZone) return;
+      if (dist < deadZone) { lastJoyDir = null; return; }
+
+      // A few degrees of hysteresis around each 45° boundary so the direction doesn't flicker
+      // between two directions when the thumb sits right on a boundary.
       const deg = angle * (180 / Math.PI);
-      if (deg > -45 && deg <= 45) keys.right = true;
-      else if (deg > 45 && deg <= 135) keys.down = true;
-      else if (deg > -135 && deg <= -45) keys.up = true;
-      else keys.left = true;
+      const bias = 6;
+      const zones = [
+        { dir: 'right', lo: -45 - (lastJoyDir === 'right' ? bias : 0), hi: 45 + (lastJoyDir === 'right' ? bias : 0) },
+        { dir: 'down', lo: 45 - (lastJoyDir === 'down' ? bias : 0), hi: 135 + (lastJoyDir === 'down' ? bias : 0) },
+        { dir: 'up', lo: -135 - (lastJoyDir === 'up' ? bias : 0), hi: -45 + (lastJoyDir === 'up' ? bias : 0) },
+      ];
+      let dir = zones.find((z) => deg > z.lo && deg <= z.hi)?.dir;
+      if (!dir) dir = 'left'; // everything past ±135°
+      lastJoyDir = dir;
+      keys[dir] = true;
     }
 
     function resetJoystick() {
       joyPointerId = null;
+      lastJoyDir = null;
       joyBase.classList.remove('armed');
       joyKnob.style.transform = 'translate(0,0)';
       clearJoyKeys();
@@ -593,13 +605,13 @@
     else if (dy < 0) player.dir = 'up';
 
     const dist = player.speed * TILE * dt;
-    const margin = TILE * 0.28;
+    const margin = TILE * 0.24;
 
     // Corner-turn assist: while walking in a straight line, gently pull the player toward the
     // center of the perpendicular axis (never leaves the tile they're already standing in, so
     // it's always collision-safe). Without this, being even a couple pixels off-center is enough
     // for a turn to catch on the wall's edge — this is what "sliding into a corner" games rely on.
-    const alignSpeed = player.speed * TILE * dt * 3;
+    const alignSpeed = player.speed * TILE * dt * 6;
     if (dx !== 0 && dy === 0) {
       const targetY = Math.round(player.y / TILE) * TILE;
       const diff = targetY - player.y;
