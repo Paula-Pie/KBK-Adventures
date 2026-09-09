@@ -1031,8 +1031,8 @@
   // ---------------------------------------------------------------------
   function resizeCanvas() {
     const wrap = $('canvas-wrap');
-    const availW = wrap.clientWidth - 16;
-    const availH = wrap.clientHeight - 16;
+    const availW = wrap.clientWidth - 6;
+    const availH = wrap.clientHeight - 6;
     TILE = Math.max(20, Math.floor(Math.min(availW / COLS, availH / ROWS)));
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas.style.width = `${TILE * COLS}px`;
