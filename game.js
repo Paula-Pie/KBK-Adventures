@@ -123,22 +123,22 @@
   const POWERUP_TYPES = ['speed', 'range', 'bomb', 'time'];
 
   const TUTORIAL = {
-    cols: 7, rows: 11, crateProb: 0.35, enemyMax: 1, enemySpeedMult: 0.7, time: 90,
+    cols: 9, rows: 11, crateProb: 0.35, enemyMax: 1, enemySpeedMult: 0.7, time: 90,
     lane: false, floorA: '#DCEAF2', floorB: '#C9DEEB', wall: '#3A5468',
     name: 'Samouczek', tutorial: true,
   };
 
   const LEVELS = [
-    { cols: 7, rows: 11, crateProb: 0.50, enemyMax: 2, enemySpeedMult: 1.00, time: 50, lane: false, floorA: '#E7DFCC', floorB: '#DED4BC', wall: '#3B4252', name: 'Recepcja' },
-    { cols: 7, rows: 11, crateProb: 0.55, enemyMax: 2, enemySpeedMult: 1.05, time: 50, lane: false, floorA: '#DCEFE3', floorB: '#CBE3D3', wall: '#2F5548', name: 'Open Space' },
-    { cols: 7, rows: 13, crateProb: 0.55, enemyMax: 3, enemySpeedMult: 1.10, time: 55, lane: true, floorA: '#E3E7F5', floorB: '#D0D8EF', wall: '#39415E', name: 'Sala Konferencyjna' },
-    { cols: 11, rows: 15, crateProb: 0.58, enemyMax: 3, enemySpeedMult: 1.15, time: 65, lane: false, floorA: '#F2E7D0', floorB: '#E7D4A8', wall: '#5A4326', name: 'Archiwum' },
-    { cols: 11, rows: 15, crateProb: 0.60, enemyMax: 3, enemySpeedMult: 1.20, time: 65, lane: true, floorA: '#DFE9F7', floorB: '#C4D9F0', wall: '#2E4766', name: 'Serwerownia' },
-    { cols: 11, rows: 17, crateProb: 0.62, enemyMax: 4, enemySpeedMult: 1.25, time: 70, lane: false, floorA: '#F5E0E0', floorB: '#EFC4C4', wall: '#5A2E2E', name: 'Dział Marketingu' },
-    { cols: 11, rows: 17, crateProb: 0.63, enemyMax: 4, enemySpeedMult: 1.30, time: 70, lane: true, floorA: '#EAEAEA', floorB: '#D6D6D6', wall: '#3A3A3A', name: 'Kuchnia Biurowa' },
-    { cols: 13, rows: 17, crateProb: 0.65, enemyMax: 4, enemySpeedMult: 1.35, time: 75, lane: false, floorA: '#EDE3F5', floorB: '#DBC4EF', wall: '#3E2E5A', name: 'Gabinet Zarządu' },
-    { cols: 13, rows: 17, crateProb: 0.68, enemyMax: 5, enemySpeedMult: 1.40, time: 80, lane: true, floorA: '#F5EFD0', floorB: '#EBDD9C', wall: '#5A4E1E', name: 'Skarbiec Faktur' },
-    { cols: 13, rows: 19, crateProb: 0.72, enemyMax: 6, enemySpeedMult: 1.55, time: 90, lane: true, floorA: '#F0D9D9', floorB: '#E0AFAF', wall: '#5A1E1E', name: "PANIKA PRZED DEADLINE'M" },
+    { cols: 9, rows: 11, crateProb: 0.50, enemyMax: 2, enemySpeedMult: 1.00, time: 50, lane: false, floorA: '#E7DFCC', floorB: '#DED4BC', wall: '#3B4252', name: 'Recepcja' },
+    { cols: 9, rows: 11, crateProb: 0.55, enemyMax: 2, enemySpeedMult: 1.05, time: 50, lane: false, floorA: '#DCEFE3', floorB: '#CBE3D3', wall: '#2F5548', name: 'Open Space' },
+    { cols: 9, rows: 13, crateProb: 0.55, enemyMax: 3, enemySpeedMult: 1.10, time: 55, lane: true, floorA: '#E3E7F5', floorB: '#D0D8EF', wall: '#39415E', name: 'Sala Konferencyjna' },
+    { cols: 13, rows: 15, crateProb: 0.58, enemyMax: 3, enemySpeedMult: 1.15, time: 65, lane: false, floorA: '#F2E7D0', floorB: '#E7D4A8', wall: '#5A4326', name: 'Archiwum' },
+    { cols: 13, rows: 15, crateProb: 0.60, enemyMax: 3, enemySpeedMult: 1.20, time: 65, lane: true, floorA: '#DFE9F7', floorB: '#C4D9F0', wall: '#2E4766', name: 'Serwerownia' },
+    { cols: 13, rows: 17, crateProb: 0.62, enemyMax: 4, enemySpeedMult: 1.25, time: 70, lane: false, floorA: '#F5E0E0', floorB: '#EFC4C4', wall: '#5A2E2E', name: 'Dział Marketingu' },
+    { cols: 13, rows: 17, crateProb: 0.63, enemyMax: 4, enemySpeedMult: 1.30, time: 70, lane: true, floorA: '#EAEAEA', floorB: '#D6D6D6', wall: '#3A3A3A', name: 'Kuchnia Biurowa' },
+    { cols: 15, rows: 17, crateProb: 0.65, enemyMax: 4, enemySpeedMult: 1.35, time: 75, lane: false, floorA: '#EDE3F5', floorB: '#DBC4EF', wall: '#3E2E5A', name: 'Gabinet Zarządu' },
+    { cols: 15, rows: 17, crateProb: 0.68, enemyMax: 5, enemySpeedMult: 1.40, time: 80, lane: true, floorA: '#F5EFD0', floorB: '#EBDD9C', wall: '#5A4E1E', name: 'Skarbiec Faktur' },
+    { cols: 15, rows: 19, crateProb: 0.72, enemyMax: 6, enemySpeedMult: 1.55, time: 90, lane: true, floorA: '#F0D9D9', floorB: '#E0AFAF', wall: '#5A1E1E', name: "PANIKA PRZED DEADLINE'M" },
   ];
 
   // Enemy roster — unlocked cumulatively as the player reaches minLevel.
