@@ -157,14 +157,6 @@
   logoSprite.src = 'assets/logo-white.png?v=1';
   const LOGO_SPRITE_ASPECT = 300 / 167; // width / height of assets/logo.png (same crop as logo-white.png)
 
-  const coffeeSprite = new Image();
-  coffeeSprite.src = 'assets/powerup-coffee.png?v=1';
-  const COFFEE_SPRITE_ASPECT = 360 / 220; // width / height of assets/powerup-coffee.png
-
-  const timeSprite = new Image();
-  timeSprite.src = 'assets/powerup-time.png?v=1';
-  const TIME_SPRITE_ASPECT = 190 / 260; // width / height of assets/powerup-time.png
-
   // ---------------------------------------------------------------------
   // DOM
   // ---------------------------------------------------------------------
@@ -464,7 +456,7 @@
   // briefing, quiz) are left alone so their own content can still scroll on short screens.
   document.addEventListener('touchmove', (e) => {
     if (screenGame.hidden) return;
-    if (e.target.closest('.intro-card, .quiz-card')) return;
+    if (e.target.closest('.intro-card, .quiz-card, #touch-controls')) return;
     e.preventDefault();
   }, { passive: false });
 
@@ -731,11 +723,10 @@
     hudLives.innerHTML = '';
     const slots = Math.max(START_LIVES, lives);
     for (let i = 0; i < slots; i++) {
-      const img = document.createElement('img');
-      img.className = 'life-icon' + (i < lives ? '' : ' lost');
-      img.src = 'assets/logo-white.png?v=1';
-      img.alt = '';
-      hudLives.appendChild(img);
+      const span = document.createElement('span');
+      span.className = 'life-icon' + (i < lives ? '' : ' lost');
+      span.textContent = '📎';
+      hudLives.appendChild(span);
     }
   }
 
@@ -847,7 +838,7 @@
     }
   }
 
-  const POWERUP_ICON = { range: '📎', bomb: '🧷' };
+  const POWERUP_ICON = { range: '📎', bomb: '🧷', speed: '☕', time: '⏰' };
 
   function drawPowerupBadge(x, y) {
     const r = TILE * 0.48;
@@ -873,22 +864,6 @@
         const h = TILE * 0.52;
         const w = h * LOGO_SPRITE_ASPECT;
         ctx.drawImage(logoSprite, x - w / 2, y - h / 2, w, h);
-      }
-      return;
-    }
-    if (p.type === 'time') {
-      if (timeSprite.complete && timeSprite.naturalWidth > 0) {
-        const h = TILE * 0.6;
-        const w = h * TIME_SPRITE_ASPECT;
-        ctx.drawImage(timeSprite, x - w / 2, y - h / 2, w, h);
-      }
-      return;
-    }
-    if (p.type === 'speed') {
-      if (coffeeSprite.complete && coffeeSprite.naturalWidth > 0) {
-        const h = TILE * 0.54;
-        const w = h * COFFEE_SPRITE_ASPECT;
-        ctx.drawImage(coffeeSprite, x - w / 2, y - h / 2, w, h);
       }
       return;
     }
