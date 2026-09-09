@@ -595,6 +595,21 @@
     const dist = player.speed * TILE * dt;
     const margin = TILE * 0.28;
 
+    // Corner-turn assist: while walking in a straight line, gently pull the player toward the
+    // center of the perpendicular axis (never leaves the tile they're already standing in, so
+    // it's always collision-safe). Without this, being even a couple pixels off-center is enough
+    // for a turn to catch on the wall's edge — this is what "sliding into a corner" games rely on.
+    const alignSpeed = player.speed * TILE * dt * 3;
+    if (dx !== 0 && dy === 0) {
+      const targetY = Math.round(player.y / TILE) * TILE;
+      const diff = targetY - player.y;
+      player.y += Math.abs(diff) < alignSpeed ? diff : Math.sign(diff) * alignSpeed;
+    } else if (dy !== 0 && dx === 0) {
+      const targetX = Math.round(player.x / TILE) * TILE;
+      const diff = targetX - player.x;
+      player.x += Math.abs(diff) < alignSpeed ? diff : Math.sign(diff) * alignSpeed;
+    }
+
     if (dx !== 0) {
       const nx = player.x + dx * dist;
       const edgeX = dx > 0 ? nx + TILE - margin : nx + margin;
