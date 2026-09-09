@@ -370,14 +370,37 @@
     return el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable);
   }
 
+  let lastKeyDir = null; // most-recently-pressed direction wins when two are held at once
+
   window.addEventListener('keydown', (e) => {
     if (isTypingTarget(document.activeElement)) return;
-    if (KEY_MAP[e.code]) { keys[KEY_MAP[e.code]] = true; e.preventDefault(); }
+    const dir = KEY_MAP[e.code];
+    if (dir) { keys[dir] = true; lastKeyDir = dir; e.preventDefault(); }
     if (e.code === 'Space' && running) { placeBomb(); e.preventDefault(); }
   });
   window.addEventListener('keyup', (e) => {
     if (isTypingTarget(document.activeElement)) return;
-    if (KEY_MAP[e.code]) { keys[KEY_MAP[e.code]] = false; e.preventDefault(); }
+    const dir = KEY_MAP[e.code];
+    if (dir) {
+      keys[dir] = false;
+      e.preventDefault();
+      if (lastKeyDir === dir) {
+        lastKeyDir = ['up', 'down', 'left', 'right'].find((d) => keys[d]) || null;
+      }
+    }
+  });
+  // A key held down when the window/tab loses focus never gets its "keyup" — without this,
+  // that direction stays stuck true forever, silently overriding whatever the player presses
+  // next depending on axis priority. Clearing everything on blur is the standard fix.
+  window.addEventListener('blur', () => {
+    keys.up = keys.down = keys.left = keys.right = false;
+    lastKeyDir = null;
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      keys.up = keys.down = keys.left = keys.right = false;
+      lastKeyDir = null;
+    }
   });
 
   // Virtual joystick — always-visible base fixed in the left zone; drag the knob from its
@@ -558,7 +581,12 @@
     player.moving = dx !== 0 || dy !== 0;
     if (!player.moving) return;
 
-    if (dx !== 0 && dy !== 0) { dy = 0; } // cardinal movement only
+    // Cardinal movement only — when two directions are held at once, whichever was
+    // pressed most recently wins instead of always favoring the horizontal axis.
+    if (dx !== 0 && dy !== 0) {
+      if (lastKeyDir === 'up' || lastKeyDir === 'down') dx = 0;
+      else dy = 0;
+    }
     if (dx > 0) player.dir = 'right';
     else if (dx < 0) player.dir = 'left';
     else if (dy > 0) player.dir = 'down';
