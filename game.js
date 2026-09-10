@@ -216,6 +216,7 @@
   let levelClearPending = false;
   let firstCrateDone = false;
   let lifeDropsThisLevel = 0;
+  let timeDroppedThisLevel = false;
   let quizQueue = [];
 
   function shuffleQuizzes() {
@@ -363,6 +364,7 @@
     levelClearPending = false;
     firstCrateDone = false;
     lifeDropsThisLevel = 0;
+    timeDroppedThisLevel = false;
     nextEnemySpawnAt = performance.now() + ENEMY_RESPAWN_MS;
     if (levelDef.enemyMax > 0) spawnEnemy();
   }
@@ -547,13 +549,18 @@
           addScore(SCORE.crate);
           cratesRemaining--;
           const lifeAllowed = LIFE_LEVELS.includes(levelIdx) && lifeDropsThisLevel < lifeCap();
+          const forceTime = !timeDroppedThisLevel && cratesRemaining === 0;
           if (lifeAllowed && !firstCrateDone) {
             powerups.push({ c, r, type: 'life' });
             lifeDropsThisLevel++;
+          } else if (forceTime) {
+            powerups.push({ c, r, type: 'time' });
+            timeDroppedThisLevel = true;
           } else if (Math.random() < POWERUP_CHANCE) {
             const pool = lifeAllowed ? [...POWERUP_TYPES, 'life'] : POWERUP_TYPES;
             const type = pool[Math.floor(Math.random() * pool.length)];
             if (type === 'life') lifeDropsThisLevel++;
+            if (type === 'time') timeDroppedThisLevel = true;
             powerups.push({ c, r, type });
           }
           firstCrateDone = true;
