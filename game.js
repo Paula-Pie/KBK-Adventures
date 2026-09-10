@@ -17,10 +17,12 @@
   const SCORE = { crate: 10, enemy: 50, powerup: 5 };
   const LEVEL_CLEAR_BASE = 100;
   const QUIZ_BONUS = 25;
-  // Trivia breaks: keyed by the level number the player is about to enter (i.e. shown right after
-  // clearing the previous one). Each answer's `v` is compared against `correct` to grade it.
-  const QUIZZES = {
-    2: {
+  // Trivia breaks — a pool of 9 questions, one per level transition (2 through 10). Each answer's
+  // `v` is compared against `correct` to grade it. The pool is reshuffled at the start of every
+  // run (see shuffleQuizzes/quizQueue) so which question lands on which transition varies between
+  // playthroughs instead of always being the same question in the same spot.
+  const QUIZ_POOL = [
+    {
       img: 'assets/quiz-record.jpg?v=2',
       alt: 'record by Leviatan',
       question: 'Czy długopis RECORD ma tusz dokumentalny niemieckiego producenta DOCUMENTAL?',
@@ -30,7 +32,7 @@
       ],
       correct: 'tak',
     },
-    3: {
+    {
       img: 'assets/quiz-soap.jpg?v=2',
       alt: 'Mydło w płynie d.rect Office',
       question: 'Jaki jest zapach różowego mydła d.rect?',
@@ -41,7 +43,7 @@
       ],
       correct: 'b',
     },
-    4: {
+    {
       img: 'assets/quiz-screencleaner.jpg?v=2',
       alt: 'TFT/LCD Screen Cleaner d.rect Office',
       question: 'Ile ml ma płyn d.rect TFT/LCD do czyszczenia ekranów?',
@@ -52,7 +54,7 @@
       ],
       correct: '250',
     },
-    5: {
+    {
       img: 'assets/quiz-korektor.jpg?v=2',
       alt: 'Korektor w taśmie FORM+ by Leviatan',
       question: 'Ile metrów taśmy korekcyjnej ma korektor SMART FORM+ 5501?',
@@ -63,7 +65,7 @@
       ],
       correct: '14',
     },
-    6: {
+    {
       img: 'assets/quiz-leviatan.jpg?v=2',
       alt: 'Siedziba Leviatan-Poligrafia',
       question: 'W którym roku powstała firma Leviatan-Poligrafia?',
@@ -74,7 +76,7 @@
       ],
       correct: '1989',
     },
-    7: {
+    {
       img: 'assets/quiz-hator.png?v=2',
       alt: 'Hator Gold — zestaw do renowacji napisów na płytach kamiennych',
       question: 'Czy w skład zestawu do renowacji napisów na nagrobkach wchodzi m.in. kamień szlifierski?',
@@ -84,7 +86,7 @@
       ],
       correct: 'tak',
     },
-    8: {
+    {
       img: 'assets/quiz-nanotape.jpg?v=1',
       alt: 'Taśma Nano Tape',
       question: 'Czy taśma Nano Tape jest odrywalna (można ją oderwać i przykleić wiele razy)?',
@@ -94,7 +96,7 @@
       ],
       correct: 'tak',
     },
-    9: {
+    {
       img: 'assets/quiz-kawa.jpg?v=2',
       alt: 'Kawa Life Up',
       question: 'Kawa w ofercie Leviatan to:',
@@ -105,7 +107,7 @@
       ],
       correct: 'a',
     },
-    10: {
+    {
       img: 'assets/quiz-zszywacz.png?v=2',
       alt: 'Zszywacz Smart FORM+ 5106 by Leviatan',
       question: 'Jaka technologia została użyta w najnowszym zszywaczu FORM+5106?',
@@ -116,7 +118,7 @@
       ],
       correct: 'c',
     },
-  };
+  ];
   const LEVEL_BANNER_MS = 1500;
 
   const TILE_EMPTY = 0, TILE_WALL = 1, TILE_CRATE = 2;
@@ -214,6 +216,15 @@
   let levelClearPending = false;
   let firstCrateDone = false;
   let lifeDropsThisLevel = 0;
+  let quizQueue = [];
+
+  function shuffleQuizzes() {
+    quizQueue = [...QUIZ_POOL];
+    for (let i = quizQueue.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [quizQueue[i], quizQueue[j]] = [quizQueue[j], quizQueue[i]];
+    }
+  }
 
   function lifeCap() { return levelIdx === 10 ? 2 : 1; }
   let player, enemies, bombs, explosions, powerups;
@@ -774,7 +785,7 @@
       levelBanner.hidden = true;
       const prevPlayer = player;
       const proceed = () => { startLevel(nextIdx, prevPlayer); beginLoop(); };
-      const quiz = QUIZZES[nextIdx];
+      const quiz = quizQueue[nextIdx - 2];
       if (quiz) showQuiz(quiz, proceed);
       else proceed();
     }, LEVEL_BANNER_MS);
@@ -1119,6 +1130,7 @@
     levelBanner.hidden = true;
     score = 0;
     lives = START_LIVES;
+    shuffleQuizzes();
     // Populate the HUD (lives row included) BEFORE startLevel() measures the available
     // canvas size — otherwise the board gets sized against a shorter, lives-less HUD and
     // ends up too tall once the lives icons appear, overlapping/hiding them.
