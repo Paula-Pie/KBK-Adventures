@@ -541,6 +541,7 @@
   }
   .result-sub{font-size:.85rem; opacity:.7; margin:0 0 14px;}
   .email-capture{
+    position:relative;
     background:linear-gradient(135deg, var(--amber), #ff8a3d);
     border-radius:16px;
     padding:14px 16px 16px;
@@ -548,7 +549,14 @@
     text-align:left;
     color:#241a06;
   }
-  .email-capture h3{margin:0 0 4px; font-size:1rem; font-family:'Baloo 2',sans-serif;}
+  .email-close{
+    position:absolute; top:8px; right:8px;
+    width:26px; height:26px; border-radius:50%;
+    border:none; background:#00000022; color:#241a06;
+    font-size:.85rem; line-height:1; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .email-capture h3{margin:0 26px 4px 0; font-size:1rem; font-family:'Baloo 2',sans-serif;}
   .email-capture p{margin:0 0 10px; font-size:.78rem; opacity:.85;}
   .email-capture input[type="email"]{
     width:100%; box-sizing:border-box; padding:10px 12px; border-radius:10px;
@@ -719,12 +727,12 @@
       <div class="rank-badge" id="result-rank">—</div>
 
       <div class="email-capture" id="email-capture" hidden>
+        <button id="email-skip-btn" class="email-close" aria-label="Zamknij">✕</button>
         <h3>📧 Podaj maila i zachowaj wynik — wskakuj do rankingu!</h3>
         <input type="email" id="email-input" placeholder="twoj@email.pl" autocomplete="email" />
         <label><input type="checkbox" id="email-consent" /> Zgadzam się na kontakt marketingowy od Leviatan-Poligrafia w sprawie oferty i konkursów.</label>
         <div class="email-actions">
           <button id="email-submit-btn" class="btn btn-primary">Zapisz</button>
-          <button id="email-skip-btn" class="btn btn-ghost">Nie teraz</button>
         </div>
         <p class="email-note" id="email-note" hidden></p>
       </div>
