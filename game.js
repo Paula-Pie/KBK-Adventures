@@ -1299,25 +1299,9 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Błąd zapisu.');
 
-      score += 50;
-      resultScore.textContent = String(score);
       localStorage.setItem('kbk-office-email-given', '1');
 
-      const lbRes = await fetch('/api/leaderboard', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nick: currentNick, score }),
-      });
-      const lbData = await lbRes.json();
-      if (lbData.rank) {
-        resultRank.textContent = lbData.improved
-          ? `Nowy rekord! Miejsce #${lbData.rank}`
-          : `Twoje najlepsze miejsce: #${lbData.rank}`;
-      }
-      loadLeaderboard(resultBoardBody, currentNick);
-      loadLeaderboard(null, null, miniBoardList);
-
-      emailNote.textContent = 'Zapisano! +50 pkt doliczone. Dzięki!';
+      emailNote.textContent = 'Zapisano! Dzięki!';
       setTimeout(() => { emailCapture.hidden = true; }, 1600);
     } catch (err) {
       emailNote.textContent = 'Nie udało się zapisać (spróbuj ponownie).';
