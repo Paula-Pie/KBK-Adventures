@@ -199,6 +199,12 @@
   const resultScore = $('result-score');
   const resultRank = $('result-rank');
   const resultBoardBody = $('result-board-body');
+  const emailCapture = $('email-capture');
+  const emailInput = $('email-input');
+  const emailConsent = $('email-consent');
+  const emailSubmitBtn = $('email-submit-btn');
+  const emailSkipBtn = $('email-skip-btn');
+  const emailNote = $('email-note');
 
   function showScreen(el) {
     [screenMenu, screenGame, screenResults].forEach((s) => (s.hidden = s !== el));
@@ -1258,7 +1264,67 @@
 
     loadLeaderboard(resultBoardBody, currentNick);
     loadLeaderboard(null, null, miniBoardList);
+
+    emailNote.hidden = true;
+    emailInput.value = '';
+    emailConsent.checked = false;
+    emailCapture.hidden = !!localStorage.getItem('kbk-office-email-given');
   }
+
+  emailSkipBtn.addEventListener('click', () => {
+    emailCapture.hidden = true;
+  });
+
+  emailSubmitBtn.addEventListener('click', async () => {
+    const email = emailInput.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      emailNote.hidden = false;
+      emailNote.textContent = 'Podaj poprawny adres e-mail.';
+      return;
+    }
+    if (!emailConsent.checked) {
+      emailNote.hidden = false;
+      emailNote.textContent = 'Zaznacz zgodę, żeby zapisać e-mail.';
+      return;
+    }
+    emailSubmitBtn.disabled = true;
+    emailNote.hidden = false;
+    emailNote.textContent = 'Zapisywanie…';
+    try {
+      const res = await fetch('/api/collect-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, nick: currentNick, score, consent: true }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Błąd zapisu.');
+
+      score += 50;
+      resultScore.textContent = String(score);
+      localStorage.setItem('kbk-office-email-given', '1');
+
+      const lbRes = await fetch('/api/leaderboard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nick: currentNick, score }),
+      });
+      const lbData = await lbRes.json();
+      if (lbData.rank) {
+        resultRank.textContent = lbData.improved
+          ? `Nowy rekord! Miejsce #${lbData.rank}`
+          : `Twoje najlepsze miejsce: #${lbData.rank}`;
+      }
+      loadLeaderboard(resultBoardBody, currentNick);
+      loadLeaderboard(null, null, miniBoardList);
+
+      emailNote.textContent = 'Zapisano! +50 pkt doliczone. Dzięki!';
+      setTimeout(() => { emailCapture.hidden = true; }, 1600);
+    } catch (err) {
+      emailNote.textContent = 'Nie udało się zapisać (spróbuj ponownie).';
+    } finally {
+      emailSubmitBtn.disabled = false;
+    }
+  });
 
   // ---------------------------------------------------------------------
   // Leaderboard
