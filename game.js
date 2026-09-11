@@ -1267,7 +1267,7 @@
 
     emailNote.hidden = true;
     emailInput.value = '';
-    emailConsent.checked = false;
+    emailConsent.checked = true;
     emailCapture.hidden = !!localStorage.getItem('kbk-office-email-given');
   }
 
