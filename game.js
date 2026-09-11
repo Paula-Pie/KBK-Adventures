@@ -1244,20 +1244,14 @@
     showScreen(screenResults);
 
     emailNote.hidden = true;
-    emailInput.value = '';
+    emailInput.value = localStorage.getItem('kbk-office-last-email') || '';
     emailConsent.checked = true;
 
     loadLeaderboard(resultBoardBody, currentNick);
     loadLeaderboard(null, null, miniBoardList);
 
-    if (localStorage.getItem('kbk-office-email-given')) {
-      emailCapture.hidden = true;
-      resultRank.textContent = 'Wysyłanie wyniku…';
-      await submitToLeaderboard();
-    } else {
-      emailCapture.hidden = false;
-      resultRank.textContent = 'Podaj maila, aby zapisać wynik w rankingu.';
-    }
+    emailCapture.hidden = false;
+    resultRank.textContent = 'Podaj maila, aby zapisać wynik w rankingu.';
   }
 
   async function submitToLeaderboard() {
@@ -1312,7 +1306,7 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Błąd zapisu.');
 
-      localStorage.setItem('kbk-office-email-given', '1');
+      localStorage.setItem('kbk-office-last-email', email);
 
       emailNote.textContent = 'Zapisano! Dzięki!';
       resultRank.textContent = 'Wysyłanie wyniku…';
