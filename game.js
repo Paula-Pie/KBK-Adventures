@@ -101,9 +101,9 @@
       alt: 'Kawa Life Up',
       question: 'Kawa w ofercie Leviatan to:',
       answers: [
-        { label: 'A) Milano, Amsterdam...', v: 'a' },
-        { label: 'B) Czechy, Argentyna, Monaco...', v: 'b' },
-        { label: 'C) Toskania, Morawy...', v: 'c' },
+        { label: 'A) Milano, Amsterdam, Brasilia, Budapest', v: 'a' },
+        { label: 'B) Czechy, Argentyna, Monaco, Sycylia', v: 'b' },
+        { label: 'C) Toskania, Morawy, Istria, Piemont', v: 'c' },
       ],
       correct: 'a',
     },
