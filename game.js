@@ -1241,9 +1241,26 @@
       resultSub.textContent = `Dotarłeś do poziomu ${levelIdx}/${LEVELS.length}. Ale akcja w open space!`;
     }
     resultScore.textContent = String(score);
-    resultRank.textContent = 'Wysyłanie wyniku…';
     showScreen(screenResults);
 
+    emailNote.hidden = true;
+    emailInput.value = '';
+    emailConsent.checked = true;
+
+    loadLeaderboard(resultBoardBody, currentNick);
+    loadLeaderboard(null, null, miniBoardList);
+
+    if (localStorage.getItem('kbk-office-email-given')) {
+      emailCapture.hidden = true;
+      resultRank.textContent = 'Wysyłanie wyniku…';
+      await submitToLeaderboard();
+    } else {
+      emailCapture.hidden = false;
+      resultRank.textContent = 'Podaj maila, aby zapisać wynik w rankingu.';
+    }
+  }
+
+  async function submitToLeaderboard() {
     try {
       const res = await fetch('/api/leaderboard', {
         method: 'POST',
@@ -1264,15 +1281,11 @@
 
     loadLeaderboard(resultBoardBody, currentNick);
     loadLeaderboard(null, null, miniBoardList);
-
-    emailNote.hidden = true;
-    emailInput.value = '';
-    emailConsent.checked = true;
-    emailCapture.hidden = !!localStorage.getItem('kbk-office-email-given');
   }
 
   emailSkipBtn.addEventListener('click', () => {
     emailCapture.hidden = true;
+    resultRank.textContent = 'Wynik nie trafił do rankingu — bez maila nie zapisujemy wyniku.';
   });
 
   emailSubmitBtn.addEventListener('click', async () => {
@@ -1302,7 +1315,9 @@
       localStorage.setItem('kbk-office-email-given', '1');
 
       emailNote.textContent = 'Zapisano! Dzięki!';
-      setTimeout(() => { emailCapture.hidden = true; }, 1600);
+      resultRank.textContent = 'Wysyłanie wyniku…';
+      await submitToLeaderboard();
+      setTimeout(() => { emailCapture.hidden = true; }, 1200);
     } catch (err) {
       emailNote.textContent = 'Nie udało się zapisać (spróbuj ponownie).';
     } finally {
