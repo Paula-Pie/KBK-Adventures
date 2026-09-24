@@ -995,32 +995,30 @@
     }
   }
 
-  function drawStapler() {
-    ctx.fillStyle = '#6B7280';
+  function drawEraser() {
+    ctx.fillStyle = '#FF7AA2';
     roundRect(-TILE * 0.28, -TILE * 0.26, TILE * 0.56, TILE * 0.5, TILE * 0.11);
     ctx.fill();
-    ctx.fillStyle = '#565D6B';
+    ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(-TILE * 0.28, TILE * 0.02, TILE * 0.56, TILE * 0.08);
     drawEnemyEyes(-TILE * 0.057, false);
-    ctx.strokeStyle = '#2b2b2b';
+    ctx.strokeStyle = '#C23B63';
     ctx.lineWidth = Math.max(1.4, TILE * 0.023);
     ctx.beginPath();
     ctx.moveTo(-TILE * 0.071, TILE * 0.114); ctx.lineTo(TILE * 0.071, TILE * 0.114);
     ctx.stroke();
   }
 
-  function drawPrinter(now) {
-    ctx.fillStyle = '#3A3E46';
+  function drawBook(now) {
+    ctx.fillStyle = '#2E6FCE';
     roundRect(-TILE * 0.3, -TILE * 0.27, TILE * 0.6, TILE * 0.52, TILE * 0.09);
     ctx.fill();
     ctx.fillStyle = '#EDEDED';
     ctx.fillRect(-TILE * 0.24, -TILE * 0.02, TILE * 0.48, TILE * 0.09);
     const blink = Math.floor(now / 400) % 2 === 0;
-    ctx.fillStyle = blink ? '#FF4136' : '#7A1F1A';
-    ctx.beginPath();
-    ctx.arc(TILE * 0.2, -TILE * 0.18, TILE * 0.037, 0, Math.PI * 2);
-    ctx.fill();
-    // jammed paper corner
+    ctx.fillStyle = blink ? '#FF4136' : '#B0121B';
+    ctx.fillRect(TILE * 0.16, -TILE * 0.27, TILE * 0.06, TILE * 0.16);
+    // dog-eared page corner
     ctx.fillStyle = '#fff';
     ctx.beginPath();
     ctx.moveTo(-TILE * 0.18, TILE * 0.16);
@@ -1029,33 +1027,33 @@
     ctx.closePath();
     ctx.fill();
     drawEnemyEyes(-TILE * 0.171, false);
-    ctx.strokeStyle = '#2b2b2b';
+    ctx.strokeStyle = '#1B2B45';
     ctx.lineWidth = Math.max(1.2, TILE * 0.02);
     ctx.beginPath();
     ctx.arc(0, TILE * 0.086, TILE * 0.043, 0, Math.PI * 2);
     ctx.stroke();
   }
 
-  function drawMug(now) {
-    ctx.strokeStyle = '#8B5A2B';
+  function drawBell(now) {
+    ctx.strokeStyle = '#B8860B';
     ctx.lineWidth = Math.max(2.5, TILE * 0.057);
     ctx.beginPath();
     ctx.arc(TILE * 0.22, 0, TILE * 0.1, -1.1, 1.1);
     ctx.stroke();
-    ctx.fillStyle = '#8B5A2B';
+    ctx.fillStyle = '#F0B429';
     ctx.beginPath();
     ctx.arc(0, 2, TILE * 0.26, 0, Math.PI * 2);
     ctx.fill();
-    const steamY = -TILE * 0.28 + Math.sin(now / 300) * 2;
-    ctx.strokeStyle = 'rgba(180,180,180,.7)';
+    const waveY = -TILE * 0.28 + Math.sin(now / 300) * 2;
+    ctx.strokeStyle = 'rgba(240,180,41,.7)';
     ctx.lineWidth = Math.max(1.2, TILE * 0.023);
     const sx = TILE * 0.086, sx2 = TILE * 0.129, sx3 = TILE * 0.071, sx4 = TILE * 0.029;
     ctx.beginPath();
-    ctx.moveTo(-sx, steamY + sx); ctx.quadraticCurveTo(-sx2, steamY, -sx, steamY - sx);
-    ctx.moveTo(sx3, steamY + sx); ctx.quadraticCurveTo(sx4, steamY, sx3, steamY - sx);
+    ctx.moveTo(-sx, waveY + sx); ctx.quadraticCurveTo(-sx2, waveY, -sx, waveY - sx);
+    ctx.moveTo(sx3, waveY + sx); ctx.quadraticCurveTo(sx4, waveY, sx3, waveY - sx);
     ctx.stroke();
     drawEnemyEyes(-TILE * 0.029, false);
-    ctx.strokeStyle = '#4A2E12';
+    ctx.strokeStyle = '#8A5A00';
     ctx.lineWidth = Math.max(1.2, TILE * 0.023);
     ctx.beginPath();
     ctx.arc(0, TILE * 0.129, TILE * 0.05, 0.15 * Math.PI, 0.85 * Math.PI);
@@ -1074,9 +1072,9 @@
 
     ctx.scale(1.14, 1.14); // slightly bigger bodies — easier to see and to judge collisions against
     switch (en.kind) {
-      case 'printer': drawPrinter(now); break;
-      case 'mug': drawMug(now); break;
-      default: drawStapler();
+      case 'printer': drawBook(now); break;
+      case 'mug': drawBell(now); break;
+      default: drawEraser();
     }
 
     ctx.restore();
