@@ -963,7 +963,7 @@
     ctx.fill();
 
     if (playerSprite.complete && playerSprite.naturalWidth > 0) {
-      const h = TILE * 1.4;
+      const h = TILE * 2;
       const w = h * PLAYER_SPRITE_ASPECT;
       const squash = player.moving ? 1 - Math.abs(Math.sin(now / 90)) * 0.05 : 1;
       ctx.drawImage(playerSprite, -w / 2, -h * 0.58 * squash, w, h * squash);
