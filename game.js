@@ -152,8 +152,8 @@
   ];
 
   const playerSprite = new Image();
-  playerSprite.src = 'assets/player.png?v=3';
-  const PLAYER_SPRITE_ASPECT = 328 / 380; // width / height of assets/player.png
+  playerSprite.src = 'assets/player.png?v=4';
+  const PLAYER_SPRITE_ASPECT = 5400 / 7700; // width / height of assets/player.png
 
   // Embedded as a data URI (not a separate file request) so the lives/heart icon can never
   // fail to load due to a network hiccup, caching quirk, or asset path issue.
